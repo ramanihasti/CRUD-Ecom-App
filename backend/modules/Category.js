@@ -12,6 +12,6 @@ const categorySchema = new mongoose.Schema({
   image: { type: String, require: true },
 });
 
-const Category = mongooes.model("Category", categorySchema);
+const Category = mongoose.model("Category", categorySchema);
 
 module.exports = Category;
