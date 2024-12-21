@@ -1,4 +1,3 @@
-const { findById } = require("../modules/Category");
 const SubCategory = require("../modules/SubCategory");
 const path = require("path");
 const fs = require("fs/promises");
@@ -62,7 +61,53 @@ const addSubCategory = async (req, res) => {
 };
 const updateSubCategory = async (req, res) => {
   try {
-    res.status(200).json({ success: true });
+    const { id } = req.params;
+    const subCategory = await SubCategory.findById(id);
+
+    if (!subCategory) {
+      return req
+        .status(404)
+        .json({ success: false, msg: "Mo such sub-category found." });
+    }
+    if (!req.body) {
+      req.body = {};
+    }
+    // if (req.files && req.files.image) {
+    //   const fileName = path.basename(subCategory.image);
+    //   const folderPath = path.join(__dirname, "../uploads", "subcategory");
+    //   const fileInFolder = await fs.readdir(folderPath);
+
+    //   if (fileInFolder.includes(fileName)) {
+    //     await fs.unlink(path.join(folderPath, fileName));
+    //   }
+
+    //   const newFileName = Date.now() + "-" + req.files.image.name;
+    //   await req.files.image.mv(path.join(folderPath, fileName));
+    //   const newimageURL = `http://localhost:5000/uploads/subcategory/${newFileName}`;
+    //   req.body.image = newimageURL;
+    // }
+    if (req.files && req.files.image) {
+      const fileName = path.basename(subCategory.image);
+      const folderPath = path.join(__dirname, "../uploads", "subcategory");
+      const filesInfolder = await fs.readdir(folderPath);
+      console.log("filesInfolder", filesInfolder);
+      if (filesInfolder.includes(fileName)) {
+        await fs.unlink(path.join(folderPath, fileName));
+      }
+
+      const newFileName = Date.now() + "-" + req.files.image.name;
+      await req.files.image.mv(path.join(folderPath, fileName));
+      const newImageURL = `http://localhost:5000/uploads/subcategory/${newFileName}`;
+
+      req.body.image = newImageURL;
+    }
+
+    const updatedSubcategory = await SubCategory.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json({ success: true, data: updatedSubcategory });
   } catch (error) {
     res.status(500).json({ success: false, msg: error.message });
   }
