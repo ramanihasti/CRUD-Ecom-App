@@ -28,4 +28,24 @@ const saveMultipleFiles = async (files, folderName) => {
   return temp;
 };
 
-module.exports = { saveFile, deleteFile, saveMultipleFiles };
+const deleteMultipleFiles = async (urlInDB, folderName, urlsInBody) => {
+  if (urlsInBody) {
+    //update case
+    for (const url of urlInDB) {
+      if (!urlsInBody.includes(url)) {
+        await deleteFile(url, folderName);
+      }
+    }
+  } else {
+    //delete case
+    for (const url of urlInDB) {
+      await deleteFile(url, folderName);
+    }
+  }
+};
+module.exports = {
+  saveFile,
+  deleteFile,
+  saveMultipleFiles,
+  deleteMultipleFiles,
+};
