@@ -96,7 +96,7 @@ const deletePage = async (req, res) => {
 
   await Page.findByIdAndDelete(id);
 
-  sendSuccessReaponse(res, "Page deleted successfully.");
+  sendSuccessReaponse(res, "Page deletedd successfully.");
   try {
   } catch (error) {
     sendErrorResponse(res, error.message);
