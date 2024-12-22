@@ -6,7 +6,7 @@ const subCategorySchema = new mongoose.Schema({
   slug: { type: String, minLength: 2, required: true, unique: true },
   image: { type: String, required: true },
   category: {
-    type: mongoose.Types.ObjectId,
+    type: [mongoose.Types.ObjectId],
     ref: Category,
     // required: true,
   },

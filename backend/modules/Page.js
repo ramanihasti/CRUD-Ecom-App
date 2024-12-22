@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
+const { validate } = require("./Product");
+const { checkIfEmptyArray } = require("../helper/validationHelper");
 
-const productSchema = new mongoose.Schema({
+const pageSchema = new mongoose.Schema({
   name: { type: String, minLength: 2, required: true },
   slug: { type: String, minLength: 2, unique: true, required: true },
-  desc: { type: String, minLength: 20 },
   images: {
     type: [String],
     validate: {
@@ -19,24 +20,21 @@ const productSchema = new mongoose.Schema({
         }
         return true;
       },
-      message: "At least one image is required.",
+      message: "At least one images is required.",
     },
     required: true,
   },
-  category: { type: [mongoose.Types.ObjectId], ref: "Category" },
-  subCategory: {
+  subCategories: {
     type: [mongoose.Types.ObjectId],
     ref: "SubCategory",
+    validate: {
+      validator: checkIfEmptyArray,
+      message: "At least sub-category is required.",
+    },
     required: true,
   },
-  price: { type: Number, min: 0, required: true },
-  discountPercentage: { type: Number, min: 0, max: 100, default: 0 },
-  taxPercentage: { type: Number, min: 0, max: 100, required: true },
-  shipplingFee: { type: Number, min: 0, default: 0 },
-  color: { type: [String] },
-  sizes: { type: [String] },
 });
 
-const Product = mongoose.model("Product", productSchema);
+const Page = mongoose.model("Page", pageSchema);
 
-module.exports = Product;
+module.exports = Page;
