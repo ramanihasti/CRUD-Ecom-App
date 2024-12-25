@@ -3,7 +3,7 @@ import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { COMPANY_NAME } from "../../../consts";
 
-function AdminNavbar() {
+function PublicNavbar() {
   return (
     <Navbar fluid rounded>
       <Navbar.Brand href="https://flowbite-react.com">
@@ -46,4 +46,4 @@ function AdminNavbar() {
   );
 }
 
-export default AdminNavbar;
+export default PublicNavbar;

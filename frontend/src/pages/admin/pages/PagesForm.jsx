@@ -1,12 +1,12 @@
 import React from "react";
 import AdminPageTitle from "../../../components/admin/common/AdminPageTitle";
 
-function SubCategoriesList() {
+function PagesForm() {
   return (
     <div>
-      <AdminPageTitle title="Sub Categories" link="/admin/subCategories/add" />
+      <AdminPageTitle title="Add Update Page" />
     </div>
   );
 }
 
-export default SubCategoriesList;
+export default PagesForm;

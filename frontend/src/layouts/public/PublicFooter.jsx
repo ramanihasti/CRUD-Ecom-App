@@ -8,7 +8,7 @@ import {
   BsTwitter,
 } from "react-icons/bs";
 
-function AdminFooter() {
+function PublicFooter() {
   return (
     <Footer bgDark className="rounded-none">
       <div className="w-full">
@@ -27,4 +27,4 @@ function AdminFooter() {
   );
 }
 
-export default AdminFooter;
+export default PublicFooter;
