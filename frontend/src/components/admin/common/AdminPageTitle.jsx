@@ -11,13 +11,7 @@ function AdminPageTitle({ title, link }) {
           {title}
         </h2>
         {link && (
-          <Button
-            pill
-            size="sm"
-            gradientDuoTone="greenToBlue"
-            as={Link}
-            to={link}
-          >
+          <Button pill size="sm" gradientDuoTone="primary" as={Link} to={link}>
             <HiMiniPlus className="mr-2 h-4 w-4" />
             Add New
           </Button>

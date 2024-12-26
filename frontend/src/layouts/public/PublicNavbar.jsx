@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { Link } from "react-router-dom";
-import { COMPANY_NAME } from "../../../consts";
+import { COMPANY_NAME } from "../../consts";
 
 function PublicNavbar() {
   return (
@@ -36,6 +36,9 @@ function PublicNavbar() {
           </Dropdown.Header>
           <Dropdown.Item as={Link} to="/">
             Home
+          </Dropdown.Item>
+          <Dropdown.Item as={Link} to="/admin">
+            Dashboard
           </Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item>Sign out</Dropdown.Item>
