@@ -8,8 +8,10 @@ const fileUpload = require("express-fileupload");
 const subCategoryRouter = require("./router/SubCategoryRouter");
 const productRouter = require("./router/ProductRouter");
 const pageRouter = require("./router/PageRouter");
+const cors = require("cors");
 
 // server.use(express.json);
+server.use(cors());
 server.use(fileUpload());
 server.use("/uploads", express.static("uploads")); // upload path pe aana wali koi bhi req ko handle karna hain
 

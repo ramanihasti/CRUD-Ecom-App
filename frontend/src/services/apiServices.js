@@ -3,29 +3,36 @@
 import { BASE_URL } from "../consts";
 
 async function getAllCategories() {
-  try {
-    const response = await fetch(`${BASE_URL}/categories`);
-    return await response.json();
-  } catch (error) {
-    console.log(error.message);
-  }
+  const response = await fetch(`${BASE_URL}/categories`);
+  return await response.json();
 }
 
-function getSingleCategory() {}
+async function getSingleCategory(id) {
+  const response = await fetch(`${BASE_URL}/categories/${id}`);
+  return await response.json();
+}
 
 async function addCategory(body) {
-  try {
-    const response = await fetch(`${BASE_URL}/categories`, {
-      method: "POST",
-      body: body,
-    });
-    return await response.json();
-  } catch (error) {
-    console.log(error.message);
-  }
+  const response = await fetch(`${BASE_URL}/categories`, {
+    method: "POST",
+    body: body,
+  });
+  return await response.json();
 }
-function updateCategory() {}
-function deleteCategory() {}
+async function updateCategory(body, id) {
+  const response = await fetch(`${BASE_URL}/categories/${id}`, {
+    method: "PATCH",
+    body,
+  });
+  return response.json();
+}
+
+async function deleteCategory(id) {
+  const response = await fetch(`${BASE_URL}/categories/${id}`, {
+    method: "DELETE",
+  });
+  return await response.json();
+}
 
 export {
   getAllCategories,
@@ -36,6 +43,7 @@ export {
 };
 
 // End Categories
+
 //koi bhi from input ko handle karne ke liye teen chize honi zaruri hain: id. name, onchange
 // frontend se backend tak data bhej ne ke liye ye current folder yani ki apiServices ke function ka use karna zaruri hain.
 //inse aap frontend se backend par req bhej sakte hain.
