@@ -1,22 +1,47 @@
-import React, { useState } from "react";
+import { Button } from "flowbite-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminPageTitle from "../../../components/admin/common/AdminPageTitle";
-import { Button, FileInput, Label, TextInput } from "flowbite-react";
-import { addCategory } from "../../../services/apiServices";
-import MyFileInput from "../../../components/admin/common/MyFileInput";
-import MyTextInput from "../../../components/admin/common/MyTextInput";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import {
+  addCategory,
+  getSingleCategory,
+  updateCategory,
+} from "../../../services/apiServices";
+import MyFileInput from "../../../components/admin/common/form/MyFileInput";
+import MyTextInput from "../../../components/admin/common/form/MyTextInput";
+
+const initialState = {
+  name: "",
+  slug: "",
+  image: null,
+};
 
 function CategoriesForm() {
+  const [formState, setFormState] = useState(initialState);
   const [imageURL, setImageURL] = useState("");
-  const [formState, setFormState] = useState({
-    name: "",
-    slug: "",
-    image: null,
-  });
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  function handleInputChange(e) {
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  const isAdd = id === "add";
+
+  async function fetchCategory() {
+    try {
+      if (!isAdd) {
+        const result = await getSingleCategory(id);
+        setFormState(result.data);
+        setImageURL(result.data.image);
+      }
+    } catch (error) {
+      toast("Failed to fetch category data.", { type: "error" });
+    }
+  }
+
+  function handleChange(e) {
     setFormState({
       ...formState,
       name: e.target.value,
@@ -34,31 +59,45 @@ function CategoriesForm() {
   }
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    console.log("formState", formState);
+    try {
+      e.preventDefault(); // HTML ko form submit karne se rokenge.
+      console.log("formState", formState);
 
-    const formData = new FormData();
+      const formData = new FormData();
+      formData.append("name", formState.name);
+      formData.append("slug", formState.slug);
+      formData.append("image", formState.image);
+      let result;
+      if (isAdd) {
+        result = await addCategory(formData);
+      } else {
+        result = await updateCategory(id, formData);
+      }
+      console.log("result", result);
 
-    formData.append("name", formState.name);
-    formData.append("slug", formState.slug);
-    formData.append("image", formState.image);
-
-    const result = await addCategory(formData);
-    console.log("result", result);
-
-    if (!result.success) {
-      return toast("Faild to add category. " + result.msg, {
+      if (!result.success) {
+        return toast(`Failed to ${isAdd ? "add" : "update"} category.`, {
+          type: "error",
+        });
+      }
+      toast(`Category ${isAdd ? "added" : "updated"} successfully.`, {
+        type: "success",
+      });
+      navigate("/admin/categories");
+    } catch (error) {
+      return toast(`Failed to ${isAdd ? "add" : "update"} category.`, {
         type: "error",
       });
     }
-    toast("Category added Successfully!", { type: "success" });
-    navigate("/admin/categories");
   }
 
   return (
     <div>
-      <AdminPageTitle title="Add Update Category" />
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <AdminPageTitle title={`${isAdd ? "Add" : "Update"} Category`} />
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-[1fr_2fr] mt-4 gap-4"
+      >
         {/* <div>
           <div className="mb-2 block">
             <Label htmlFor="image" value="Upload file" />
@@ -68,27 +107,29 @@ function CategoriesForm() {
         <MyFileInput
           name="image"
           label="Upload Category File"
-          onChange={handleFileUpload}
           url={imageURL}
+          onChange={handleFileUpload}
         />
 
-        <MyTextInput
-          name="name"
-          label="Category Name"
-          value={formState.name}
-          onChange={handleInputChange}
-          required={true}
-        />
+        <div className="flex flex-col gap-4">
+          <MyTextInput
+            name="name"
+            label="Category Name"
+            value={formState.name}
+            onChange={handleChange}
+            required={true}
+          />
 
-        <MyTextInput
-          name="slug"
-          label="Category Slug"
-          value={formState.slug}
-          disabled={true}
-        />
-        <Button gradientDuoTone="primary" type="submit">
-          Submit
-        </Button>
+          <MyTextInput
+            name="slug"
+            label="Category Slug"
+            value={formState.slug}
+            disabled={true}
+          />
+          <Button gradientDuoTone="primary" type="submit">
+            Submit
+          </Button>
+        </div>
       </form>
     </div>
   );

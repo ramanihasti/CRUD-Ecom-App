@@ -7,8 +7,8 @@ function MyCommonListItem({
   src,
   title,
   subTitle,
-  handleEdit,
   handleDelete,
+  handleEdit,
   index,
   length,
 }) {
@@ -21,12 +21,19 @@ function MyCommonListItem({
           <p className="font-thin">{subTitle}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
+          {/* <Button
             size="xs"
             gradientDuoTone="primary"
             onClick={() => {
               handleEdit(id);
             }}
+          > */}
+          <Button
+            onClick={() => {
+              handleEdit(id);
+            }}
+            size="xs"
+            gradientDuoTone="primary"
           >
             <HiMiniPencilSquare className="h-4 w-4" onClick={handleEdit} />
           </Button>

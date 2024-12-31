@@ -5,8 +5,8 @@ function MyTextInput({
   name,
   label,
   value,
-  type = "text",
   onChange,
+  type = "text",
   required = false,
   disabled = false,
 }) {

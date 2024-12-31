@@ -27,8 +27,13 @@ const getSingleCategory = async (req, res) => {
 
 const addCategory = async (req, res) => {
   try {
-    console.log("req.body", req.body);
-    console.log("req-files", req.files);
+    if (!req.files || !req.files.image) {
+      return res
+        .status(400)
+        .json({ success: false, msg: "Category image is require." });
+    }
+    // console.log("req.body", req.body);
+    // console.log("req-files", req.files);
 
     const fileName = Date.now() + "-" + req.files.image.name;
     const fileUpload = path.join(__dirname, "../uploads", "category", fileName);
@@ -67,13 +72,14 @@ const updateCategory = async (req, res) => {
       const fileName = path.basename(category.image);
       const folderPath = path.join(__dirname, "../uploads", "category");
       const filesInfolder = await fs.readdir(folderPath);
-      console.log("filesInfolder", filesInfolder);
+      // console.log("filesInfolder", filesInfolder);
+
       if (filesInfolder.includes(fileName)) {
         await fs.unlink(path.join(folderPath, fileName));
       }
 
       const newFileName = Date.now() + "-" + req.files.image.name;
-      await req.files.image.mv(path.join(folderPath, fileName));
+      await req.files.image.mv(path.join(folderPath, newFileName));
       const newImageURL = `http://localhost:5000/uploads/category/${newFileName}`;
 
       req.body.image = newImageURL;
@@ -85,7 +91,7 @@ const updateCategory = async (req, res) => {
 
     res.status(200).json({ success: true, data: updatedCategory });
   } catch (error) {
-    console.log(error.message);
+    // console.log(error.message);
     res.status(500).json({ success: false, msg: error.message });
   }
 };

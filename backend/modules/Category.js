@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 
 const categorySchema = new mongoose.Schema({
-  name: { type: String, minLength: 2, maxLength: 100, require: true },
+  name: { type: String, minLength: 2, require: true },
   slug: {
     type: String,
     minLength: 2,
-    maxLength: 100,
     unique: true,
     require: true,
   },

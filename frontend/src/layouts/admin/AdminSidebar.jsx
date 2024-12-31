@@ -29,10 +29,10 @@ const links = [
 function AdminSidebar() {
   return (
     <>
-      <ul className="border-r border-r-gray-300 p-4">
+      <ul className="border-r border-r-gray-300 p-4 font-serif">
         {links.map((value) => {
           return (
-            <li key={value.id} className="text-gray-700 hover:text-teal-600">
+            <li key={value.id} className="text-[#21534e] hover:text-teal-600 ">
               <Link className="flex items-center gap-2" to={value.to}>
                 <value.icon className="h-4 w-4" />
                 <span className="text-md">{value.name}</span>

@@ -20,7 +20,7 @@ function MyCommonList({ getAllData, deleteData }) {
       const result = await getAllData();
       setData(result.data);
     } catch (error) {
-      toast("Faile to fetch data.", { type: "error" });
+      toast("Failed to fetch data.", { type: "error" });
       setError(error.message);
     } finally {
       setLoading(false);
