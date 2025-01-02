@@ -29,8 +29,8 @@ const getSinglelSubCategory = async (req, res) => {
 
 const addSubCategory = async (req, res) => {
   try {
-    console.log("req.body", req.body);
-    console.log("req-files", req.files);
+    // console.log("req.body", req.body);
+    // console.log("req-files", req.files);
 
     if (!req.files || !req.files.image) {
       return res
@@ -51,7 +51,7 @@ const addSubCategory = async (req, res) => {
     const subCategory = await SubCategory.create({
       name: req.body.name,
       slug: req.body.slug,
-      // category: req.body.category,
+      category: req.body.category,
       image: imageURL,
     });
     res.status(200).json({ success: true, data: subCategory });
@@ -61,8 +61,8 @@ const addSubCategory = async (req, res) => {
 };
 const updateSubCategory = async (req, res) => {
   try {
-    console.log("req.body", req.body);
-    // console.log("req-files", req.files);
+    // console.log("req.body", req.body);
+
     const { id } = req.params;
     const subCategory = await SubCategory.findById(id);
 
