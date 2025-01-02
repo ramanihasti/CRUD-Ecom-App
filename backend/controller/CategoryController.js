@@ -86,7 +86,7 @@ const updateCategory = async (req, res) => {
     }
 
     const updatedCategory = await Category.findByIdAndUpdate(id, req.body, {
-      new: true,
+      new: true, // use: by default original database return karta hain aapko updated database chahiye.
     });
 
     res.status(200).json({ success: true, data: updatedCategory });
