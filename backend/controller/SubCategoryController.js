@@ -61,6 +61,8 @@ const addSubCategory = async (req, res) => {
 };
 const updateSubCategory = async (req, res) => {
   try {
+    console.log("req.body", req.body);
+    // console.log("req-files", req.files);
     const { id } = req.params;
     const subCategory = await SubCategory.findById(id);
 
@@ -69,23 +71,11 @@ const updateSubCategory = async (req, res) => {
         .status(404)
         .json({ success: false, msg: "Mo such sub-category found." });
     }
+
     if (!req.body) {
       req.body = {};
     }
-    // if (req.files && req.files.image) {
-    //   const fileName = path.basename(subCategory.image);
-    //   const folderPath = path.join(__dirname, "../uploads", "subcategory");
-    //   const fileInFolder = await fs.readdir(folderPath);
 
-    //   if (fileInFolder.includes(fileName)) {
-    //     await fs.unlink(path.join(folderPath, fileName));
-    //   }
-
-    //   const newFileName = Date.now() + "-" + req.files.image.name;
-    //   await req.files.image.mv(path.join(folderPath, fileName));
-    //   const newimageURL = `http://localhost:5000/uploads/subcategory/${newFileName}`;
-    //   req.body.image = newimageURL;
-    // }
     if (req.files && req.files.image) {
       const fileName = path.basename(subCategory.image);
       const folderPath = path.join(__dirname, "../uploads", "subcategory");
@@ -134,7 +124,6 @@ const deleteSubCategory = async (req, res) => {
     res
       .status(200)
       .json({ success: true, msg: " Sub-category deleted successfully." });
-    res.status(200).json({ success: true });
   } catch (error) {
     res.status(500).json({ success: false, msg: error.message });
   }

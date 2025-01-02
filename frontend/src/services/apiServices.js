@@ -19,12 +19,13 @@ async function addCategory(body) {
   });
   return await response.json();
 }
+
 async function updateCategory(body, id) {
   const response = await fetch(`${BASE_URL}/categories/${id}`, {
     method: "PATCH",
     body,
   });
-  return response.json();
+  return await response.json();
 }
 
 async function deleteCategory(id) {
@@ -33,9 +34,9 @@ async function deleteCategory(id) {
   });
   return await response.json();
 }
-
 // End Categories
-// Sub-Category
+
+// Sub-Categories
 async function getAllSubCategories() {
   const response = await fetch(`${BASE_URL}/subCategories`);
   return await response.json();
@@ -53,7 +54,15 @@ async function addSubCategory(body) {
   });
   return await response.json();
 }
-async function updateSubCategory(body, id) {
+
+// async function updateSubCategory(body, id) {
+//   const response = await fetch(`${BASE_URL}/subCategories/${id}`, {
+//     method: "PATCH",
+//     body,
+//   });
+//   return await response.json();
+// }
+async function updateSubCategory(id, body) {
   const response = await fetch(`${BASE_URL}/subCategories/${id}`, {
     method: "PATCH",
     body,

@@ -1,7 +1,6 @@
 import { Button } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import AdminPageTitle from "../../../components/admin/common/AdminPageTitle";
 import { toast } from "react-toastify";
 import {
   addCategory,
@@ -10,6 +9,8 @@ import {
 } from "../../../services/apiServices";
 import MyFileInput from "../../../components/admin/common/form/MyFileInput";
 import MyTextInput from "../../../components/admin/common/form/MyTextInput";
+import MyAlert from "../../../components/common/MyAlert";
+import { HiArrowPath, HiMiniExclamationTriangle } from "react-icons/hi2";
 
 const initialState = {
   name: "",
@@ -18,16 +19,19 @@ const initialState = {
 };
 
 function CategoriesForm() {
+  const { id } = useParams();
+  const isAdd = id === "add";
+  const [loadingFormState, setLoadingFormState] = useState(
+    isAdd ? false : true
+  );
   const [formState, setFormState] = useState(initialState);
+  const [errorFormState, setErrorFormState] = useState("");
   const [imageURL, setImageURL] = useState("");
   const navigate = useNavigate();
-  const { id } = useParams();
 
   useEffect(() => {
     fetchCategory();
   }, []);
-
-  const isAdd = id === "add";
 
   async function fetchCategory() {
     try {
@@ -38,6 +42,9 @@ function CategoriesForm() {
       }
     } catch (error) {
       toast("Failed to fetch category data.", { type: "error" });
+      setErrorFormState("Failed to fetch category data.");
+    } finally {
+      setLoadingFormState(false);
     }
   }
 
@@ -91,9 +98,21 @@ function CategoriesForm() {
     }
   }
 
+  if (loadingFormState) {
+    return <MyAlert icon={HiArrowPath} msg="Loading..." />;
+  }
+
+  if (errorFormState) {
+    return (
+      <MyAlert
+        color="failure"
+        icon={HiMiniExclamationTriangle}
+        msg={errorFormState}
+      />
+    );
+  }
   return (
     <div>
-      <AdminPageTitle title={`${isAdd ? "Add" : "Update"} Category`} />
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-[1fr_2fr] mt-4 gap-4"
