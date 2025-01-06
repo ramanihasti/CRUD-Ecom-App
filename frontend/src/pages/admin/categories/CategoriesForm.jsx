@@ -29,14 +29,15 @@ function CategoriesForm() {
   const [imageURL, setImageURL] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchCategory();
-  }, []);
-
   async function fetchCategory() {
     try {
       if (!isAdd) {
         const result = await getSingleCategory(id);
+        if (!result.success) {
+          toast("Failed to fetch category.", { type: "error" });
+          setErrorFormState("Failed to fetch category.");
+          return;
+        }
         setFormState(result.data);
         setImageURL(result.data.image);
       }
@@ -47,6 +48,12 @@ function CategoriesForm() {
       setLoadingFormState(false);
     }
   }
+
+  useEffect(() => {
+    if (!isAdd) {
+      fetchCategory();
+    }
+  }, [id]);
 
   function handleChange(e) {
     setFormState({
@@ -67,13 +74,14 @@ function CategoriesForm() {
 
   async function handleSubmit(e) {
     try {
-      e.preventDefault(); // HTML ko form submit karne se rokenge.
+      e.preventDefault();
       console.log("formState", formState);
 
       const formData = new FormData();
       formData.append("name", formState.name);
       formData.append("slug", formState.slug);
       formData.append("image", formState.image);
+
       let result;
       if (isAdd) {
         result = await addCategory(formData);

@@ -1,6 +1,7 @@
 // Categories
 
 import { BASE_URL } from "../consts";
+// import { getAllApiServices } from "../helper/apiServicesHelper";
 
 async function getAllCategories() {
   const response = await fetch(`${BASE_URL}/categories`);
@@ -36,7 +37,16 @@ async function deleteCategory(id) {
 }
 // End Categories
 
+// export const {
+//   getAllCategories,
+//   getSingleCategory,
+//   addCategory,
+//   updateCategory,
+//   deleteCategory,
+// } = getAllApiServices("category", "categories");
+
 // Sub-Categories
+
 async function getAllSubCategories() {
   const response = await fetch(`${BASE_URL}/subCategories`);
   return await response.json();
@@ -55,19 +65,12 @@ async function addSubCategory(body) {
   return await response.json();
 }
 
-// async function updateSubCategory(body, id) {
-//   const response = await fetch(`${BASE_URL}/subCategories/${id}`, {
-//     method: "PATCH",
-//     body,
-//   });
-//   return await response.json();
-// }
 async function updateSubCategory(id, body) {
   const response = await fetch(`${BASE_URL}/subCategories/${id}`, {
     method: "PATCH",
     body,
   });
-  return response.json();
+  return await response.json();
 }
 
 async function deleteSubCategory(id) {
@@ -76,8 +79,42 @@ async function deleteSubCategory(id) {
   });
   return await response.json();
 }
-
 // End Sub-Category
+
+// Product
+async function getAllProducts() {
+  const response = await fetch(`${BASE_URL}/product`);
+  return await response.json();
+}
+
+async function getSingleProduct(id) {
+  const response = await fetch(`${BASE_URL}/product/${id}`);
+  return await response.json();
+}
+
+async function addProduct(body) {
+  const response = await fetch(`${BASE_URL}/product`, {
+    method: "POST",
+    body: body,
+  });
+  return await response.json();
+}
+
+async function updateProduct(body, id) {
+  const response = await fetch(`${BASE_URL}/product/${id}`, {
+    method: "PATCH",
+    body,
+  });
+  return await response.json();
+}
+
+async function deleteProduct(id) {
+  const response = await fetch(`${BASE_URL}/product/${id}`, {
+    method: "DELETE",
+  });
+  return await response.json();
+}
+// End Product
 
 export {
   getAllCategories,
@@ -90,6 +127,11 @@ export {
   addSubCategory,
   updateSubCategory,
   deleteSubCategory,
+  getAllProducts,
+  getSingleProduct,
+  addProduct,
+  updateProduct,
+  deleteProduct,
 };
 
 //koi bhi from input ko handle karne ke liye teen chize honi zaruri hain: id. name, onchange

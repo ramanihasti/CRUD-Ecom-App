@@ -102,7 +102,7 @@ function SubCategoriesForm() {
 
   async function handleSubmit(e) {
     try {
-      e.preventDefault();
+      e.preventDefault(); // HTML ko form submit karne se rokenge.
 
       const formData = new FormData(); // FormData ko formState me append karenge loop ka use karke.
       for (const key in formState) {
@@ -124,7 +124,7 @@ function SubCategoriesForm() {
         });
       }
 
-      toast(`Sub-Category ${isAdd ? "added" : "updateed"} successfully.`, {
+      toast(`Sub-Category ${isAdd ? "added" : "updated"} successfully.`, {
         type: "success",
       });
       navigate("/admin/subCategories");

@@ -4,7 +4,7 @@ import AdminPageTitle from "../../../components/admin/common/AdminPageTitle";
 function ProductsList() {
   return (
     <div>
-      <AdminPageTitle title="Product List" />
+      <AdminPageTitle title="Product List" link="/admin/products/add" />
     </div>
   );
 }
