@@ -17,8 +17,8 @@ server.use("/uploads", express.static("uploads")); // upload path pe aana wali k
 
 server.use("/categories", categoryRouter);
 server.use("/subCategories", subCategoryRouter);
-server.use("/product", productRouter);
-server.use("/page", pageRouter);
+server.use("/products", productRouter);
+server.use("/pages", pageRouter);
 
 const start = async () => {
   try {

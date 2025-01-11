@@ -11,17 +11,20 @@ const productSchema = new mongoose.Schema({
         if (!images) {
           return false;
         }
+
         if (images && !Array.isArray(images)) {
           return false;
         }
+
         if (images && Array.isArray(images) && !images.length) {
           return false;
         }
+
         return true;
       },
       message: "At least one image is required.",
     },
-    required: true,
+    required: false,
   },
   category: { type: [mongoose.Types.ObjectId], ref: "Category" },
   subCategory: {
@@ -30,10 +33,11 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   price: { type: Number, min: 0, required: true },
+  quantity: { type: Number, min: 0, required: true },
   discountPercentage: { type: Number, min: 0, max: 100, default: 0 },
   taxPercentage: { type: Number, min: 0, max: 100, required: true },
-  shipplingFee: { type: Number, min: 0, default: 0 },
-  color: { type: [String] },
+  shippingFee: { type: Number, min: 0, default: 0 },
+  colors: { type: [String] },
   sizes: { type: [String] },
 });
 

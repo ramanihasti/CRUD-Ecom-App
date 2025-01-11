@@ -1,17 +1,17 @@
 import { FileInput, Label } from "flowbite-react";
 import React from "react";
 
-function MyMultipleFileInput({ name, label, urls, onChange }) {
+function MyMultipleFileInput({ name, label, onChange, urls }) {
   return (
     <div>
       <div className="grid grid-cols-4 gap-4">
         {urls.map((url, index) => {
           return (
-            <div key={index} className="mb-4 mt-8">
+            <div key={index} className="mb-2">
               <img
                 src={url || "/placeholder.png"}
                 alt=""
-                className="w-full h-[256px] object-cover  border border-gray-300 rounded-xl"
+                className="w-full h-[256px] rounded-xl object-cover border border-gray-300"
               />
             </div>
           );
@@ -25,8 +25,8 @@ function MyMultipleFileInput({ name, label, urls, onChange }) {
         id={name}
         name={name}
         multiple
-        onChange={onChange}
         color="primary"
+        onChange={onChange}
       />
     </div>
   );

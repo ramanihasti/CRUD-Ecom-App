@@ -21,7 +21,7 @@ async function addCategory(body) {
   return await response.json();
 }
 
-async function updateCategory(body, id) {
+async function updateCategory(id, body) {
   const response = await fetch(`${BASE_URL}/categories/${id}`, {
     method: "PATCH",
     body,
@@ -83,33 +83,33 @@ async function deleteSubCategory(id) {
 
 // Product
 async function getAllProducts() {
-  const response = await fetch(`${BASE_URL}/product`);
+  const response = await fetch(`${BASE_URL}/products`);
   return await response.json();
 }
 
 async function getSingleProduct(id) {
-  const response = await fetch(`${BASE_URL}/product/${id}`);
+  const response = await fetch(`${BASE_URL}/products/${id}`);
   return await response.json();
 }
 
 async function addProduct(body) {
-  const response = await fetch(`${BASE_URL}/product`, {
+  const response = await fetch(`${BASE_URL}/products`, {
     method: "POST",
     body: body,
   });
   return await response.json();
 }
 
-async function updateProduct(body, id) {
-  const response = await fetch(`${BASE_URL}/product/${id}`, {
+async function updateProduct(id, body) {
+  const response = await fetch(`${BASE_URL}/products/${id}`, {
     method: "PATCH",
-    body,
+    body: body,
   });
   return await response.json();
 }
 
 async function deleteProduct(id) {
-  const response = await fetch(`${BASE_URL}/product/${id}`, {
+  const response = await fetch(`${BASE_URL}/products/${id}`, {
     method: "DELETE",
   });
   return await response.json();

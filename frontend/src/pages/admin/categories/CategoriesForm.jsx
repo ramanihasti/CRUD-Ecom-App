@@ -82,6 +82,8 @@ function CategoriesForm() {
       formData.append("slug", formState.slug);
       formData.append("image", formState.image);
 
+      console.log(Array.from(formData.entries()));
+
       let result;
       if (isAdd) {
         result = await addCategory(formData);

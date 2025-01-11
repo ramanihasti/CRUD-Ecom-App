@@ -7,7 +7,6 @@ import CategoriesList from "./pages/admin/categories/CategoriesList";
 import CategoriesForm from "./pages/admin/categories/CategoriesForm";
 import SubCategoriesList from "./pages/admin/subCategories/SubCategoriesList";
 import SubCategoriesForm from "./pages/admin/subCategories/SubcategoriesForm";
-import ProductsForm from "./pages/admin/products/ProductsForm";
 import ProductsList from "./pages/admin/products/ProductsList";
 import PagesList from "./pages/admin/pages/PagesList";
 import PagesForm from "./pages/admin/pages/PagesForm";
@@ -18,6 +17,7 @@ import UsersForm from "./pages/admin/users/UsersForm";
 import Home from "./pages/public/Home";
 import PublicLayout from "./layouts/public/PublicLayout";
 import FormWrapper from "./components/admin/common/FormWrapper";
+import ProductsForm from "./pages/admin/products/ProductsForm";
 
 function App() {
   return (
@@ -51,7 +51,14 @@ function App() {
               }
             />
             <Route path="products" element={<ProductsList />} />
-            <Route path="products/:id" element={<ProductsForm />} />
+            <Route
+              path="products/:id"
+              element={
+                <FormWrapper title={"Product"}>
+                  <ProductsForm />
+                </FormWrapper>
+              }
+            />
             <Route path="pages" element={<PagesList />} />
             <Route path="pages/:id" element={<PagesForm />} />
             <Route path="orders" element={<OrdersList />} />

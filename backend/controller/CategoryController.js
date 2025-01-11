@@ -54,6 +54,8 @@ const addCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   try {
+    // console.log("req.body", req.body);
+    // console.log("req.files", req.files);
     const { id } = req.params;
 
     const category = await Category.findById(id);
@@ -64,18 +66,24 @@ const updateCategory = async (req, res) => {
         .json({ success: false, msg: "No such category found." });
     }
 
+    console.log("category", category);
+
     if (!req.body) {
       req.body = {};
     }
 
     if (req.files && req.files.image) {
-      const fileName = path.basename(category.image);
       const folderPath = path.join(__dirname, "../uploads", "category");
-      const filesInfolder = await fs.readdir(folderPath);
-      // console.log("filesInfolder", filesInfolder);
 
-      if (filesInfolder.includes(fileName)) {
-        await fs.unlink(path.join(folderPath, fileName));
+      if (category.image) {
+        const fileName = path.basename(category.image);
+        console.log("fileName", fileName);
+        const filesInfolder = await fs.readdir(folderPath);
+        // console.log("filesInfolder", filesInfolder);
+
+        if (filesInfolder.includes(fileName)) {
+          await fs.unlink(path.join(folderPath, fileName));
+        }
       }
 
       const newFileName = Date.now() + "-" + req.files.image.name;

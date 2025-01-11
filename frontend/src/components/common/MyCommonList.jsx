@@ -9,7 +9,7 @@ import {
 } from "react-icons/hi2";
 import MyCommonListItem from "./MyCommonListItem";
 
-function MyCommonList({ getAllData, deleteData }) {
+function MyCommonList({ getAllData, deleteData, getAllFields }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
@@ -41,7 +41,7 @@ function MyCommonList({ getAllData, deleteData }) {
       if (!isSure) return;
 
       const result = await deleteData(id);
-      console.log("Category ID:", id);
+      // console.log("Category ID:", id);
 
       if (!result.success) {
         return toast("Failed to delete", { type: "error" });
@@ -70,13 +70,15 @@ function MyCommonList({ getAllData, deleteData }) {
       return (
         <ul className="bg-[#e4daf6d1] rounded-md p-4 border border-violet-300">
           {data.map((item, index) => {
+            const { image, title, subTitle } = getAllFields(item);
+
             return (
               <MyCommonListItem
                 key={index}
                 id={item._id}
-                src={item.image}
-                title={item.name}
-                subTitle={item.slug}
+                src={image}
+                title={title}
+                subTitle={subTitle}
                 handleDelete={handleDelete}
                 handleEdit={handleEdit}
                 index={index}
