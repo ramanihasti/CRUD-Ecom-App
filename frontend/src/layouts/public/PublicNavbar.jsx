@@ -1,20 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { COMPANY_NAME } from "../../consts";
+import { getAllPages } from "../../services/apiServices";
+import { toast } from "react-toastify";
 
 function PublicNavbar() {
+  const [pages, setPages] = useState([]);
+
+  async function fetchAllPages() {
+    try {
+      const result = await getAllPages();
+
+      if (!result.success) {
+        toast("Failed to fetch pages.", { type: "error" });
+      }
+      setPages(result.data);
+    } catch (error) {
+      toast("Failed to fetch pages.", { type: "error" });
+    }
+  }
+  useEffect(() => {
+    fetchAllPages();
+  }, []);
   return (
-    <Navbar fluid rounded>
-      <Navbar.Brand href="https://flowbite-react.com">
+    <Navbar fluid border>
+      <Navbar.Brand as={"div"}>
         <img
           src="/logo.png"
           className="mr-3 h-6 sm:h-9"
           alt={`${COMPANY_NAME} Logo`}
         />
-        {/* <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          Flowbite React
-        </span> */}
       </Navbar.Brand>
       <div className="flex md:order-2">
         <Dropdown
@@ -34,17 +50,31 @@ function PublicNavbar() {
               name@flowbite.com
             </span>
           </Dropdown.Header>
-          <Dropdown.Item as={Link} to="/">
-            Home
-          </Dropdown.Item>
           <Dropdown.Item as={Link} to="/admin">
             Dashboard
           </Dropdown.Item>
+          <Dropdown.Item as={Link} to="/user">
+            Account
+          </Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item>Sign out</Dropdown.Item>
+          <Dropdown.Item>Log Out</Dropdown.Item>
         </Dropdown>
         <Navbar.Toggle />
       </div>
+      <Navbar.Collapse>
+        <Navbar.Link href="#" active>
+          Home
+        </Navbar.Link>
+        {pages.map((page) => {
+          return (
+            <Navbar.Link key={page._id} href={`/${page.slug}`}>
+              {page.name}
+            </Navbar.Link>
+          );
+        })}
+        <Navbar.Link href="#">About</Navbar.Link>
+        <Navbar.Link href="#">Contact</Navbar.Link>
+      </Navbar.Collapse>
     </Navbar>
   );
 }

@@ -55,12 +55,59 @@ const addProduct = async (req, res) => {
     res.status(500).json({ success: false, msg: error.message });
   }
 };
+console.log("jhdfusjd");
+// const updateProduct = async (req, res) => {
+//   try {
+//     console.log("req.body", req.body);
+//     console.log("req.files", req.files);
+
+//     const { id } = req.params;
+
+//     const product = await Product.findById(id);
+
+//     if (!product) {
+//       return res
+//         .status(404)
+//         .json({ success: false, msg: "No such product found." });
+//     }
+//     if (!req.body) {
+//       req.body = {};
+//     }
+//     if (!req.body.images) {
+//       req.body.images = [];
+//     }
+//     if (req.files && req.files.images) {
+//       if (Array.isArray(req.files.images)) {
+//         const temp = [];
+//         for (const imageFile of req.files.images) {
+//           const imageURL = await saveFile(imageFile, "product");
+//           temp.push(imageURL);
+//         }
+//         console.log("temp", temp);
+
+//         req.body.images = [...req.body.images, ...temp];
+//       } else {
+//         const imageURL = await saveFile(req.files.images, "product");
+//         req.body.images = [...req.body.images, imageURL];
+//       }
+//     }
+
+//     for (const imageURL of product.images) {
+//       if (!req.body.images.includes(imageURL)) {
+//         await deleteFile(imageURL, "product");
+//       }
+//     }
+//     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+//       new: true,
+//     });
+//     res.status(200).json({ success: true, data: updatedProduct });
+//   } catch (error) {
+//     res.status(505).json({ success: false, msg: error.message });
+//   }
+// };
 
 const updateProduct = async (req, res) => {
   try {
-    console.log("req.body", req.body);
-    console.log("req.files", req.files);
-
     const { id } = req.params;
 
     const product = await Product.findById(id);
@@ -70,12 +117,14 @@ const updateProduct = async (req, res) => {
         .status(404)
         .json({ success: false, msg: "No such product found." });
     }
+
     if (!req.body) {
       req.body = {};
     }
     if (!req.body.images) {
       req.body.images = [];
     }
+
     if (req.files && req.files.images) {
       if (Array.isArray(req.files.images)) {
         const temp = [];
@@ -84,14 +133,12 @@ const updateProduct = async (req, res) => {
           temp.push(imageURL);
         }
         console.log("temp", temp);
-
         req.body.images = [...req.body.images, ...temp];
       } else {
         const imageURL = await saveFile(req.files.images, "product");
         req.body.images = [...req.body.images, imageURL];
       }
     }
-
     for (const imageURL of product.images) {
       if (!req.body.images.includes(imageURL)) {
         await deleteFile(imageURL, "product");
@@ -102,7 +149,7 @@ const updateProduct = async (req, res) => {
     });
     res.status(200).json({ success: true, data: updatedProduct });
   } catch (error) {
-    res.status(505).json({ success: false, msg: error.message });
+    res.status(500).json({ success: false, msg: error.message });
   }
 };
 

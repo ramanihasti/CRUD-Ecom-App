@@ -116,6 +116,41 @@ async function deleteProduct(id) {
 }
 // End Product
 
+// page
+async function getAllPages() {
+  const response = await fetch(`${BASE_URL}/pages`);
+  return await response.json();
+}
+
+async function getSinglePage(id) {
+  const response = await fetch(`${BASE_URL}/pages/${id}`);
+  return await response.json();
+}
+
+async function addPage(body) {
+  const response = await fetch(`${BASE_URL}/pages`, {
+    method: "POST",
+    body: body,
+  });
+  return await response.json();
+}
+
+async function updatePage(id, body) {
+  const response = await fetch(`${BASE_URL}/pages/${id}`, {
+    method: "PATCH",
+    body: body,
+  });
+  return await response.json();
+}
+
+async function deletePage(id) {
+  const response = await fetch(`${BASE_URL}/pages/${id}`, {
+    method: "DELETE",
+  });
+  return await response.json();
+}
+// End Product
+
 export {
   getAllCategories,
   getSingleCategory,
@@ -132,6 +167,11 @@ export {
   addProduct,
   updateProduct,
   deleteProduct,
+  getAllPages,
+  getSinglePage,
+  addPage,
+  updatePage,
+  deletePage,
 };
 
 //koi bhi from input ko handle karne ke liye teen chize honi zaruri hain: id. name, onchange
