@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { validate } = require("./Product");
 const { checkIfEmptyArray } = require("../helper/validationHelper");
 
 const pageSchema = new mongoose.Schema({
@@ -8,18 +7,7 @@ const pageSchema = new mongoose.Schema({
   images: {
     type: [String],
     validate: {
-      validator: (images) => {
-        if (!images) {
-          return false;
-        }
-        if (images && !Array.isArray(images)) {
-          return false;
-        }
-        if (images && Array.isArray(images) && !images.length) {
-          return false;
-        }
-        return true;
-      },
+      validator: checkIfEmptyArray,
       message: "At least one images is required.",
     },
     required: true,

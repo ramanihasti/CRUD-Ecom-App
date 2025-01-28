@@ -18,6 +18,7 @@ const getAllPages = async (req, res) => {
     sendErrorResponse(res, error.message);
   }
 };
+
 const getSinglePage = async (req, res) => {
   try {
     const { id } = req.params;
@@ -31,14 +32,26 @@ const getSinglePage = async (req, res) => {
     sendErrorResponse(res, error.message);
   }
 };
+
 const addPage = async (req, res) => {
   try {
-    console.log("req.body", req.body);
-    console.log("req.files", req.files);
+    // console.log("req.body", req.body);
+    // console.log("req.files", req.files);
+
+    if (req.files && req.files.images && !Array.isArray(req.files.images)) {
+      req.files.images = [req.files.images];
+    }
+    if (
+      req.body &&
+      req.body.subCategories &&
+      !Array.isArray(req.body.subCategories)
+    ) {
+      req.body.subCategories = [req.body.subCategories];
+    }
 
     if (Array.isArray(req.files.images)) {
-      const imageURL = await saveMultipleFiles(req.files.images, "page");
-      req.body.images = imageURL;
+      const imageURLs = await saveMultipleFiles(req.files.images, "page");
+      req.body.images = imageURLs;
     } else {
       const imageURL = await saveFile(req.files.images, "page");
       req.body.images = [imageURL];
@@ -50,6 +63,7 @@ const addPage = async (req, res) => {
     sendErrorResponse(res, error.message);
   }
 };
+
 const updatePage = async (req, res) => {
   try {
     const { id } = req.params;
@@ -65,12 +79,14 @@ const updatePage = async (req, res) => {
       req.body.images = [];
     }
 
-    if (Array.isArray(req.files.images)) {
-      const imageURL = await saveMultipleFiles(req.files.images, "page");
-      req.body.images = [...req.body.images, ...imageURL];
-    } else {
-      const imageURL = await saveFile(req.files.images, "page");
-      req.body.images = [...req.body.images, imageURL];
+    if (req.files && req.files.images) {
+      if (Array.isArray(req.files.images)) {
+        const imageURLs = await saveMultipleFiles(req.files.images, "page");
+        req.body.images = [...req.body.images, ...imageURLs];
+      } else {
+        const imageURL = await saveFile(req.files.images, "page");
+        req.body.images = [...req.body.images, imageURL];
+      }
     }
 
     await deleteMultipleFiles(page.images, "page", req.body.images);
@@ -84,6 +100,7 @@ const updatePage = async (req, res) => {
     sendErrorResponse(res, error.message);
   }
 };
+
 const deletePage = async (req, res) => {
   const { id } = req.params;
   const page = await Page.findById(id);

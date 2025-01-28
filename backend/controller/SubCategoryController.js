@@ -2,6 +2,8 @@ const SubCategory = require("../modules/SubCategory");
 const path = require("path");
 const fs = require("fs/promises");
 const Category = require("../modules/Category");
+const Product = require("../modules/Product");
+const Page = require("../modules/Page");
 
 const getAllSubCategories = async (req, res) => {
   try {
@@ -15,7 +17,7 @@ const getAllSubCategories = async (req, res) => {
 const getAllSubCategoriesByCategorySlug = async (req, res) => {
   try {
     const { categorySlug } = req.params;
-    const category = await Category.findOne(categorySlug);
+    const category = await Category.findOne({ slug: categorySlug });
 
     if (!category) {
       return res
@@ -91,6 +93,7 @@ const addSubCategory = async (req, res) => {
     res.status(500).json({ success: false, msg: error.message });
   }
 };
+
 const updateSubCategory = async (req, res) => {
   try {
     // console.log("req.body", req.body);
@@ -101,7 +104,7 @@ const updateSubCategory = async (req, res) => {
     if (!subCategory) {
       return req
         .status(404)
-        .json({ success: false, msg: "Mo such sub-category found." });
+        .json({ success: false, msg: "No such sub-category found." });
     }
 
     if (!req.body) {
@@ -134,15 +137,27 @@ const updateSubCategory = async (req, res) => {
     res.status(500).json({ success: false, msg: error.message });
   }
 };
+
 const deleteSubCategory = async (req, res) => {
   try {
     const { id } = req.params;
 
+    const product = await Product.findOne({ subCategory: id });
+    const page = await Page.findById({ subCategories: id });
+
+    if (product || page) {
+      return res.status(404).json({
+        success: false,
+        msg: "Sub-category cannot be deleted as it is being used.",
+      });
+    }
+
     const subCategory = await SubCategory.findById(id);
+
     if (!subCategory) {
       return res
         .status(404)
-        .json({ success: false, msg: "No such Sub-categoy found." });
+        .json({ success: false, msg: "No such sub-category found." });
     }
 
     const fileName = path.basename(subCategory.image);
