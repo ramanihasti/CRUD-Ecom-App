@@ -1,10 +1,42 @@
 const SubCategory = require("../modules/SubCategory");
 const path = require("path");
 const fs = require("fs/promises");
+const Category = require("../modules/Category");
 
 const getAllSubCategories = async (req, res) => {
   try {
     const subCategories = await SubCategory.find();
+    res.status(200).json({ success: true, data: subCategories });
+  } catch (error) {
+    res.status(500).json({ success: false, msg: error.message });
+  }
+};
+
+const getAllSubCategoriesByCategorySlug = async (req, res) => {
+  try {
+    const { categorySlug } = req.params;
+    const category = await Category.findOne(categorySlug);
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "No such category found." });
+    }
+
+    const subCategories = await SubCategory.find({ category: category._id });
+
+    res.status(200).json({ success: true, data: subCategories });
+  } catch (error) {
+    res.status(500).json({ success: false, msg: error.message });
+  }
+};
+
+const getAllSubCategoriesByCategoryId = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+
+    const subCategories = await SubCategory.find({ category: categoryId });
+
     res.status(200).json({ success: true, data: subCategories });
   } catch (error) {
     res.status(500).json({ success: false, msg: error.message });
@@ -131,6 +163,8 @@ const deleteSubCategory = async (req, res) => {
 
 module.exports = {
   getAllSubCategories,
+  getAllSubCategoriesByCategorySlug,
+  getAllSubCategoriesByCategoryId,
   getSinglelSubCategory,
   addSubCategory,
   updateSubCategory,

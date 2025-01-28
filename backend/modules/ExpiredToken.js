@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { create } = require("./User");
 
 const expiredTokenSchema = new mongoose.Schema({
   token: { type: String, required: true },

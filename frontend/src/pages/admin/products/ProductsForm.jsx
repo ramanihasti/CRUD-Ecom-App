@@ -180,16 +180,15 @@ function ProductsForm() {
       }
 
       if (!result.success) {
-        // return toast(`Failed to ${isAdd ? "add" : "update"} product.`, {
-        //   type: "error",
-        // });
-        return console.log("!result.success ", result.meassage);
+        return toast(`Failed to ${isAdd ? "add" : "update"} product.`, {
+          type: "error",
+        });
       }
 
       console.log("successfully updated product.", result);
-      // toast(`Successfully ${isAdd ? "added" : "updated"} product.`, {
-      //   type: "success",
-      // });
+      toast(`Successfully ${isAdd ? "added" : "updated"} product.`, {
+        type: "success",
+      });
       navigate("/admin/products");
     } catch (error) {
       console.log("Failed to update. ", error);

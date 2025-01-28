@@ -4,9 +4,10 @@ const {
   sendDataResponse,
 } = require("../helper/resHelper");
 const ExpiredToken = require("../modules/ExpiredToken");
-const User = require("../modules/User");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const User1 = require("../modules/User");
 
 const register = async (req, res) => {
   try {
@@ -20,7 +21,7 @@ const register = async (req, res) => {
       return sendErrorResponse(res, "Invalid email address.", 400);
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User1.findOne({ email });
 
     if (existingUser) {
       return sendErrorResponse(res, "User already exists", 400);
@@ -29,22 +30,26 @@ const register = async (req, res) => {
     if (password.length < 6) {
       return sendErrorResponse(
         res,
-        "Password must be at least 6 characters.",
+        "Password must be at least 6 characters long.",
         400
       );
     }
 
+    const numberOfUsers = await User1.countDocuments();
+    const isAdmin = numberOfUsers === 0;
+
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({
+    await User1.create({
       fname,
       lname,
       email,
       password: hashedPassword,
+      role: isAdmin ? "admin" : "user",
     });
 
-    sendSuccessReaponse(res, "User rsegistered successfully.", 200, user);
+    sendSuccessReaponse(res, "User rsegistered successfully.", 200);
   } catch (error) {
     sendErrorResponse(res, error.message);
   }
@@ -58,27 +63,37 @@ const login = async (req, res) => {
       return sendErrorResponse(res, "All field are require.", 400);
     }
 
-    const user = await User.findOne({ email });
+    const user = await User1.findOne({ email });
 
     if (!user) {
-      return sendErrorResponse(res, "Invalid user name or password.", 404);
+      return sendErrorResponse(res, "User not found.", 404);
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return sendErrorResponse(res, "Invalid user name or password.", 404);
+      return sendErrorResponse(res, "Invalid password.", 400);
     }
 
-    const fullName = user.fname + " " + user.lname;
-
     const token = jwt.sign(
-      { id: user._id, fullName, email: user.email, role: user.role },
+      { id: user._id, role: user.role },
       process.env.JWT_SECERT,
       { expiresIn: process.env.JWT_EXPIRY }
     );
 
-    sendDataResponse(res, { token });
+    sendDataResponse(
+      res,
+      {
+        token,
+        user: {
+          id: user._id,
+          fullName: user.fname + " " + user.lname,
+          email: user.email,
+          role: user.role,
+        },
+      },
+      200
+    );
   } catch (error) {
     sendErrorResponse(res, error.message);
   }
@@ -104,7 +119,7 @@ const logout = async (req, res) => {
 
     await ExpiredToken.create({ token });
 
-    sendSuccessReaponse(res, "User logged out successfully.");
+    sendSuccessReaponse(res, "User logged out successfully.", 200);
   } catch (error) {
     sendErrorResponse(res, error.message);
   }

@@ -81,6 +81,21 @@ async function deleteSubCategory(id) {
 }
 // End Sub-Category
 
+export async function getAllSubCategoriesByCategorySlug(categorySlug) {
+  const response = await fetch(
+    `${BASE_URL}/subCategories/categories/slug/${categorySlug}`
+  );
+  // return await response.json();
+  console.log("kjidhf", response);
+}
+
+export async function getAllSubCategoriesByCategoryId(categoryId) {
+  const response = await fetch(
+    `${BASE_URL}/subCategories/categories/${categoryId}`
+  );
+  return await response.json();
+}
+
 // Product
 async function getAllProducts() {
   const response = await fetch(`${BASE_URL}/products`);
