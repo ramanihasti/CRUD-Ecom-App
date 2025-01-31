@@ -20,7 +20,7 @@ import {
 const initialState = {
   name: "",
   slug: "",
-  images: "",
+  images: null,
   subCategories: [],
 };
 
@@ -43,8 +43,10 @@ function PagesForm() {
     for (const image of formState.images) {
       formData.append("images", image);
     }
+    console.log(Array.from(formData.entries()));
     return formData;
   }
+
   function updateFormState(e, formState, setFormState) {
     if (e.target.name === "name") {
       setFormState({
@@ -141,7 +143,7 @@ function PagesForm() {
       }
 
       const transformedSubCategories = result.data.map((subCategory) => {
-        return { value: subCategory._id, text: subCategory.name };
+        return { value: subCategory._id.toString(), text: subCategory.name };
       });
 
       transformedSubCategories.unshift({
@@ -158,9 +160,9 @@ function PagesForm() {
       setSubCategoriesLoading(false);
     }
   }
-  // if (formStateLoading || categoriesLoading || subCategoriesLoading) {
-  //   return <MyAlert icon={HiArrowPath} msg="Loading..." />;
-  // }
+  if (formStateLoading || categoriesLoading || subCategoriesLoading) {
+    return <MyAlert icon={HiArrowPath} msg="Loading..." />;
+  }
 
   if (formStateError || categoriesError || subCategoriesError) {
     return (

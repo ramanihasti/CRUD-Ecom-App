@@ -7,6 +7,17 @@ function PagesList() {
   return (
     <div>
       <AdminPageTitle title="Pages" link="/admin/pages/add" />
+      <MyCommonList
+        getAllData={getAllPages}
+        deleteData={deletePage}
+        getAllFields={(page) => {
+          return {
+            image: page.images[0],
+            title: page.name,
+            subTitle: page.slug,
+          };
+        }}
+      />
     </div>
   );
 }

@@ -83,15 +83,14 @@ async function deleteSubCategory(id) {
 
 export async function getAllSubCategoriesByCategorySlug(categorySlug) {
   const response = await fetch(
-    `${BASE_URL}/subCategories/categories/slug/${categorySlug}`
+    `${BASE_URL}/subCategories/category/slug/${categorySlug}`
   );
-  // return await response.json();
-  console.log("kjidhf", response);
+  return await response.json();
 }
 
 export async function getAllSubCategoriesByCategoryId(categoryId) {
   const response = await fetch(
-    `${BASE_URL}/subCategories/categories/${categoryId}`
+    `${BASE_URL}/subCategories/category/${categoryId}`
   );
   return await response.json();
 }
@@ -145,7 +144,7 @@ async function getSinglePage(id) {
 async function addPage(body) {
   const response = await fetch(`${BASE_URL}/pages`, {
     method: "POST",
-    body: body,
+    body,
   });
   return await response.json();
 }

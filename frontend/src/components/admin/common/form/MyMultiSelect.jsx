@@ -1,5 +1,5 @@
 import { Label, Select } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FaTimesCircle } from "react-icons/fa";
 
 function getInitialOptions(initialOptions, selectedOptions) {
@@ -19,8 +19,10 @@ function getSlectedOptionsObjects(initialOptions, initialSelctedOptions) {
     }
     return false;
   });
+
   return selectedOptionsObjects;
 }
+
 function MyMultiSelect({
   name,
   label,
@@ -28,12 +30,11 @@ function MyMultiSelect({
   selectedOptions,
   setSelectedOptions,
 }) {
-  const [options, setOptions] = useState(
+  const [options, setOptions] = React.useState(
     getInitialOptions(initialOptions, selectedOptions)
   );
-  const [selectedOptionsObjects, setSelectedOptionsObjects] = useState(
-    initialOptions,
-    selectedOptions
+  const [selectedOptionsObjects, setSelectedOptionsObjects] = React.useState(
+    getSlectedOptionsObjects(initialOptions, selectedOptions)
   );
 
   React.useEffect(() => {
@@ -47,10 +48,14 @@ function MyMultiSelect({
     if (e.target.value === "") return;
 
     setSelectedOptions([...selectedOptions, e.target.value]);
+
     const selectedOptionObject = initialOptions.find((option) => {
       return option.value === e.target.value;
     });
-    setSelectedOptions([...selectedOptionsObjects, selectedOptionObject]);
+    setSelectedOptionsObjects([
+      ...selectedOptionsObjects,
+      selectedOptionObject,
+    ]);
 
     const newOptions = options.filter((option) => {
       if (option.value === e.target.value) {
@@ -60,6 +65,7 @@ function MyMultiSelect({
     });
     setOptions(newOptions);
   }
+
   function handleRemove(o) {
     const index = selectedOptions.indexOf(o);
     const selectedOptionsCopy = [...selectedOptions];
@@ -70,16 +76,16 @@ function MyMultiSelect({
     setSelectedOptions(selectedOptionsCopy);
     setSelectedOptionsObjects(selectedOptionsObjectsCopy);
 
-    const deleteSize = initialOptions.find((size) => {
+    const deletedSize = initialOptions.find((size) => {
       return size.value === o;
     });
-    setOptions([...options, deleteSize]);
+    setOptions([...options, deletedSize]);
   }
 
   return (
     <div className="">
       <div className="mb-2 block">
-        <Label htmlFor={name} value={label}></Label>
+        <Label htmlFor={name} value={label} />
       </div>
       <Select id={name} name={name} color="primary" onChange={handleAdd}>
         {options.map((size, index) => {
@@ -90,7 +96,6 @@ function MyMultiSelect({
           );
         })}
       </Select>
-
       <div className="flex flex-wrap mt-2">
         {selectedOptionsObjects.map((option, index) => {
           return (

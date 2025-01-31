@@ -27,7 +27,7 @@ export function useForm({
     if (!isAdd) {
       fetchData();
     }
-  }, []);
+  }, [id]);
 
   const fetchData = useCallback(
     async function () {
