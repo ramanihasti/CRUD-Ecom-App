@@ -33,25 +33,34 @@ const getSinglePage = async (req, res) => {
   }
 };
 
+const getPageBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const page = await Page.findOne({ slug }).populate("subCategories");
+
+    if (!page) {
+      return sendErrorResponse(res, "No such page found.", 404);
+    }
+
+    sendDataResponse(res, page);
+  } catch (error) {
+    sendErrorResponse(res, error.message);
+  }
+};
+
 const addPage = async (req, res) => {
   try {
-    // console.log("req.body", req.body);
-    // console.log("req.files", req.files);
-
-    if (req.files && req.files.images && !Array.isArray(req.files.images)) {
-      req.files.images = [req.files.images];
+    if (!req.files || !req.files.images) {
+      return sendErrorResponse(res, "Page image is required.", 400);
     }
-    if (
-      req.body &&
-      req.body.subCategories &&
-      !Array.isArray(req.body.subCategories)
-    ) {
-      req.body.subCategories = [req.body.subCategories];
-    }
-
     if (Array.isArray(req.files.images)) {
-      const imageURLs = await saveMultipleFiles(req.files.images, "page");
-      req.body.images = imageURLs;
+      const temp = [];
+      for (const image of req.files.images) {
+        const imageURL = await saveFile(image, "page");
+        temp.push(imageURL);
+      }
+      req.body.images = temp;
     } else {
       const imageURL = await saveFile(req.files.images, "page");
       req.body.images = [imageURL];
@@ -79,18 +88,42 @@ const updatePage = async (req, res) => {
       req.body.images = [];
     }
 
+    // if (req.files && req.files.images) {
+    //   if (Array.isArray(req.files.images)) {
+    //     const imageURLs = await saveMultipleFiles(req.files.images, "page");
+    //     req.body.images = [...req.body.images, ...imageURLs];
+    //   } else {
+    //     const imageURL = await saveFile(req.files.images, "page");
+    //     req.body.images = [...req.body.images, imageURL];
+    //   }
+    // }
     if (req.files && req.files.images) {
       if (Array.isArray(req.files.images)) {
-        const imageURLs = await saveMultipleFiles(req.files.images, "page");
-        req.body.images = [...req.body.images, ...imageURLs];
+        const temp = [];
+        for (const imageFile of req.files.images) {
+          const imageURL = await saveFile(imageFile, "page");
+          temp.push(imageURL);
+        }
+
+        for (const imageURL of page.images) {
+          if (!req.body.images.includes(imageURL)) {
+            await deleteFile(imageURL, "page");
+          }
+        }
+
+        req.body.images = [...req.body.images, ...temp];
       } else {
         const imageURL = await saveFile(req.files.images, "page");
         req.body.images = [...req.body.images, imageURL];
+
+        for (const imageURL of page.images) {
+          if (!req.body.images.includes(imageURL)) {
+            await deleteFile(imageURL, "page");
+          }
+        }
       }
     }
-
-    await deleteMultipleFiles(page.images, "page", req.body.images);
-
+    // await deleteMultipleFiles(page.images, "page", req.body.images);
     const updatedPage = await Page.findByIdAndUpdate(id, req.body, {
       new: true,
     });
@@ -108,12 +141,14 @@ const deletePage = async (req, res) => {
   if (!page) {
     return sendErrorResponse(res, "No Such page found.", 404);
   }
-
-  await deleteMultipleFiles(page.images, "page");
+  for (const imageURL of page.images) {
+    await deleteFile(imageURL, "page");
+  }
+  // await deleteMultipleFiles(page.images, "page");
 
   await Page.findByIdAndDelete(id);
-
-  sendSuccessReaponse(res, "Page deletedd successfully.");
+  sendDataResponse(res, null);
+  // sendSuccessReaponse(res, "Page deletedd successfully.");
   try {
   } catch (error) {
     sendErrorResponse(res, error.message);
@@ -123,6 +158,7 @@ const deletePage = async (req, res) => {
 module.exports = {
   getAllPages,
   getSinglePage,
+  getPageBySlug,
   addPage,
   updatePage,
   deletePage,
