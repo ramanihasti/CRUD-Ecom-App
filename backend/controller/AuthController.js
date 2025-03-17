@@ -5,9 +5,17 @@ const {
 } = require("../helper/resHelper");
 const ExpiredToken = require("../modules/ExpiredToken");
 
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User1 = require("../modules/User");
+
+const getUser = async (req, res) => {
+  try {
+    sendDataResponse(res, req.user, 200);
+  } catch (error) {
+    sendErrorResponse(res, error.message);
+  }
+};
 
 const register = async (req, res) => {
   try {
@@ -17,9 +25,9 @@ const register = async (req, res) => {
       return sendErrorResponse(res, "All field aare require.", 400);
     }
 
-    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-      return sendErrorResponse(res, "Invalid email address.", 400);
-    }
+    // if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    //   return sendErrorResponse(res, "Invalid email address.", 400);
+    // }
 
     const existingUser = await User1.findOne({ email });
 
@@ -42,8 +50,8 @@ const register = async (req, res) => {
     const numberOfUsers = await User1.countDocuments();
     const isAdmin = numberOfUsers === 0;
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // const salt = bcrypt.genSaltSync(10);
+    // const hashedPassword = await bcrypt.hash(password, salt);
 
     await User1.create({
       fname,
@@ -73,9 +81,9 @@ const login = async (req, res) => {
       return sendErrorResponse(res, "User not found.", 404);
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
+    if (user.password !== password) {
       return sendErrorResponse(res, "Invalid password.", 400);
     }
 
@@ -112,4 +120,4 @@ const logout = async (req, res) => {
   }
 };
 
-module.exports = { register, login, logout };
+module.exports = { register, login, logout, getUser };

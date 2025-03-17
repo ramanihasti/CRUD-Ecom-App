@@ -1,10 +1,14 @@
 const Category = require("../modules/Category");
 const path = require("path");
 const fs = require("fs/promises");
+const { sendErrorResponse } = require("../helper/resHelper");
+const SubCategory = require("../modules/SubCategory");
+const Product = require("../modules/Product");
+const Page = require("../modules/Page");
 
 const getAllCategory = async (req, res) => {
   try {
-    const category = await Category.find();
+    const category = await Category.find().sort({ createAt: -1 });
     res.status(200).json({ success: true, data: category });
   } catch (error) {
     res.status(500).json({ success: false, msg: error.message });
@@ -35,18 +39,24 @@ const addCategory = async (req, res) => {
     // console.log("req.body", req.body);
     // console.log("req-files", req.files);
 
+    const category = await Category.findOne({ slug: req.body.slug });
+
+    if (category) {
+      return sendErrorResponse(res, "Category by this name already exists.");
+    }
+
     const fileName = Date.now() + "-" + req.files.image.name;
     const fileUpload = path.join(__dirname, "../uploads", "category", fileName);
     await req.files.image.mv(fileUpload);
     const imageURl = `http://localhost:5000/uploads/category/${fileName}`;
 
-    const category = await Category.create({
+    const newCategory = await Category.create({
       name: req.body.name,
       slug: req.body.slug,
       image: imageURl,
     });
 
-    res.json({ success: true, data: category });
+    res.json({ success: true, data: newCategory });
   } catch (error) {
     res.status(500).json({ success: false, msg: error.message });
   }
@@ -65,8 +75,6 @@ const updateCategory = async (req, res) => {
         .status(404)
         .json({ success: false, msg: "No such category found." });
     }
-
-    console.log("category", category);
 
     if (!req.body) {
       req.body = {};
@@ -114,6 +122,17 @@ const deleteCategory = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, msg: "No such category found." });
+    }
+
+    const subCategory = await SubCategory.findOne({ category: id });
+    const product = await Product.findOne({ category: id });
+    const page = await Page.findOne({ slug: category.slug });
+
+    if (subCategory || product || page) {
+      return sendErrorResponse(
+        res,
+        "Category cannot be deleted as it is associated with other resources."
+      );
     }
 
     const fileName = path.basename(category.image); // basename URl me se end ka part denga.
