@@ -3,17 +3,17 @@
 import { BASE_URL } from "../consts";
 // import { getAllApiServices } from "../helper/apiServicesHelper";
 
-async function getAllCategories() {
+export async function getAllCategories() {
   const response = await fetch(`${BASE_URL}/categories`);
   return await response.json();
 }
 
-async function getSingleCategory(id) {
+export async function getSingleCategory(id) {
   const response = await fetch(`${BASE_URL}/categories/${id}`);
   return await response.json();
 }
 
-async function addCategory(body) {
+export async function addCategory(body) {
   const response = await fetch(`${BASE_URL}/categories`, {
     method: "POST",
     body: body,
@@ -21,7 +21,7 @@ async function addCategory(body) {
   return await response.json();
 }
 
-async function updateCategory(id, body) {
+export async function updateCategory(id, body) {
   const response = await fetch(`${BASE_URL}/categories/${id}`, {
     method: "PATCH",
     body,
@@ -29,7 +29,7 @@ async function updateCategory(id, body) {
   return await response.json();
 }
 
-async function deleteCategory(id) {
+export async function deleteCategory(id) {
   const response = await fetch(`${BASE_URL}/categories/${id}`, {
     method: "DELETE",
   });
@@ -47,17 +47,17 @@ async function deleteCategory(id) {
 
 // Sub-Categories
 
-async function getAllSubCategories() {
+export async function getAllSubCategories() {
   const response = await fetch(`${BASE_URL}/subCategories`);
   return await response.json();
 }
 
-async function getSingleSubCategory(id) {
+export async function getSingleSubCategory(id) {
   const response = await fetch(`${BASE_URL}/subCategories/${id}`);
   return await response.json();
 }
 
-async function addSubCategory(body) {
+export async function addSubCategory(body) {
   const response = await fetch(`${BASE_URL}/subCategories`, {
     method: "POST",
     body: body,
@@ -65,7 +65,7 @@ async function addSubCategory(body) {
   return await response.json();
 }
 
-async function updateSubCategory(id, body) {
+export async function updateSubCategory(id, body) {
   const response = await fetch(`${BASE_URL}/subCategories/${id}`, {
     method: "PATCH",
     body,
@@ -73,7 +73,7 @@ async function updateSubCategory(id, body) {
   return await response.json();
 }
 
-async function deleteSubCategory(id) {
+export async function deleteSubCategory(id) {
   const response = await fetch(`${BASE_URL}/subCategories/${id}`, {
     method: "DELETE",
   });
@@ -96,17 +96,17 @@ export async function getAllSubCategoriesByCategoryId(categoryId) {
 }
 
 // Product
-async function getAllProducts() {
+export async function getAllProducts() {
   const response = await fetch(`${BASE_URL}/products`);
   return await response.json();
 }
 
-async function getSingleProduct(id) {
+export async function getSingleProduct(id) {
   const response = await fetch(`${BASE_URL}/products/${id}`);
   return await response.json();
 }
 
-async function addProduct(body) {
+export async function addProduct(body) {
   const response = await fetch(`${BASE_URL}/products`, {
     method: "POST",
     body: body,
@@ -114,7 +114,7 @@ async function addProduct(body) {
   return await response.json();
 }
 
-async function updateProduct(id, body) {
+export async function updateProduct(id, body) {
   const response = await fetch(`${BASE_URL}/products/${id}`, {
     method: "PATCH",
     body: body,
@@ -122,7 +122,7 @@ async function updateProduct(id, body) {
   return await response.json();
 }
 
-async function deleteProduct(id) {
+export async function deleteProduct(id) {
   const response = await fetch(`${BASE_URL}/products/${id}`, {
     method: "DELETE",
   });
@@ -131,17 +131,17 @@ async function deleteProduct(id) {
 // End Product
 
 // page
-async function getAllPages() {
+export async function getAllPages() {
   const response = await fetch(`${BASE_URL}/pages`);
   return await response.json();
 }
 
-async function getSinglePage(id) {
+export async function getSinglePage(id) {
   const response = await fetch(`${BASE_URL}/pages/${id}`);
   return await response.json();
 }
 
-async function addPage(body) {
+export async function addPage(body) {
   const response = await fetch(`${BASE_URL}/pages`, {
     method: "POST",
     body,
@@ -149,7 +149,7 @@ async function addPage(body) {
   return await response.json();
 }
 
-async function updatePage(id, body) {
+export async function updatePage(id, body) {
   const response = await fetch(`${BASE_URL}/pages/${id}`, {
     method: "PATCH",
     body: body,
@@ -157,7 +157,7 @@ async function updatePage(id, body) {
   return await response.json();
 }
 
-async function deletePage(id) {
+export async function deletePage(id) {
   const response = await fetch(`${BASE_URL}/pages/${id}`, {
     method: "DELETE",
   });
@@ -165,28 +165,28 @@ async function deletePage(id) {
 }
 // End Product
 
-export {
-  getAllCategories,
-  getSingleCategory,
-  addCategory,
-  updateCategory,
-  deleteCategory,
-  getAllSubCategories,
-  getSingleSubCategory,
-  addSubCategory,
-  updateSubCategory,
-  deleteSubCategory,
-  getAllProducts,
-  getSingleProduct,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-  getAllPages,
-  getSinglePage,
-  addPage,
-  updatePage,
-  deletePage,
-};
+// Auth
+export async function register(data) {
+  const response = await fetch(`${BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return await response.json();
+}
+
+export async function login(data) {
+  const response = await fetch(`${BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return await response.json();
+}
 
 //koi bhi from input ko handle karne ke liye teen chize honi zaruri hain: id. name, onchange
 // frontend se backend tak data bhej ne ke liye ye current folder yani ki apiServices ke function ka use karna zaruri hain.
@@ -198,3 +198,31 @@ export {
 //'http://localhost/5000/categories' se jo request 'http://localhost:5173' pe jo request bheji hain wo CORS policy દ્વારા block kari hain.
 //ye error ko soul kar ne ke liye aapko backend me ek package install karna padega.
 // npm i cors
+
+// home page
+export async function getPageBySlug(slug) {
+  const response = await fetch(`${BASE_URL}/pages/slug/${slug}`);
+  const data = await response.json();
+  return data;
+}
+
+export async function getAllHomePages() {
+  const response = await fetch(`${BASE_URL}/homePages`);
+  return await response.json();
+}
+export async function addHomePage(body) {
+  const response = await fetch(`${BASE_URL}/homePages`, {
+    method: "POST",
+    body: body,
+  });
+  return await response.json();
+}
+
+export async function updateHomePage(id, body) {
+  const response = await fetch(`${BASE_URL}/homePages/${id}`, {
+    method: "PATCH",
+    body,
+  });
+  return await response.json();
+}
+// End Pages

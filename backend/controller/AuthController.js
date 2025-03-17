@@ -24,7 +24,11 @@ const register = async (req, res) => {
     const existingUser = await User1.findOne({ email });
 
     if (existingUser) {
-      return sendErrorResponse(res, "User already exists", 400);
+      return sendErrorResponse(
+        res,
+        "User with this email already exists.",
+        400
+      );
     }
 
     if (password.length < 6) {
@@ -100,26 +104,9 @@ const login = async (req, res) => {
 };
 const logout = async (req, res) => {
   try {
-    if (
-      !req.headers.authorization ||
-      !req.headers.authorization.startsWith("Bearer")
-    ) {
-      return sendErrorResponse(res, "Unauthorized", 401);
-    }
-
     const token = req.headers.authorization.split(" ")[1];
-
-    const alreadyExpiredToken = await ExpiredToken.findOne({ token });
-
-    if (alreadyExpiredToken) {
-      return sendErrorResponse(res, "Token expired.", 400);
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     await ExpiredToken.create({ token });
-
-    sendSuccessReaponse(res, "User logged out successfully.", 200);
+    sendSuccessReaponse(res, "Logged out successfully.", 200);
   } catch (error) {
     sendErrorResponse(res, error.message);
   }

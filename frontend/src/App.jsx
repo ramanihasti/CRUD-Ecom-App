@@ -15,9 +15,13 @@ import OrdersForm from "./pages/admin/orders/OrdersForm";
 import UsersList from "./pages/admin/users/UsersList";
 import UsersForm from "./pages/admin/users/UsersForm";
 import Home from "./pages/public/Home";
+import Page from "./pages/public/Page";
 import PublicLayout from "./layouts/public/PublicLayout";
 import FormWrapper from "./components/admin/common/FormWrapper";
 import ProductsForm from "./pages/admin/products/ProductsForm";
+import Login from "./pages/public/Login";
+import Register from "./pages/public/Register";
+import Contact from "./pages/public/Contact";
 
 function App() {
   return (
@@ -26,7 +30,12 @@ function App() {
         <Routes>
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
+            <Route path=":slug" element={<Page />} />
           </Route>
+
+          <Route path="contact" element={<Contact />} />
+          <Route path="register" element={<Register />} />
+          <Route path="login" element={<Login />} />
           {/* <Route path="/user" element={<UserLayout />}>
             <Route />
           </Route> */}
