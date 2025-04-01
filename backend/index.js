@@ -1,16 +1,16 @@
-const express = require("express");
 const dotenv = require("dotenv");
-const connect = require("./db/connect");
-const categoryRouter = require("./router/CategoryRouter");
-const server = express();
 dotenv.config();
+const express = require("express");
+const connect = require("./db/connect");
 const fileUpload = require("express-fileupload");
+const categoryRouter = require("./router/CategoryRouter");
 const subCategoryRouter = require("./router/SubCategoryRouter");
 const productRouter = require("./router/ProductRouter");
 const pageRouter = require("./router/PageRouter");
 const cors = require("cors");
-const authRouter = require("./router/AuthRouter");
 const homePageRouter = require("./router/HomePageRouter");
+const server = express();
+const authRouter = require("./router/AuthRouter");
 
 // server.use(express.json);
 server.use(cors());
@@ -32,7 +32,7 @@ const start = async () => {
       console.log(`Server is listeing on port ${process.env.PORT}.`);
     });
   } catch (error) {
-    console.log("Failed to connected database." + error);
+    console.log("Failed to connected the database." + error.message);
   }
 };
 
