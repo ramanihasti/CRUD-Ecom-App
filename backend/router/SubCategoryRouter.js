@@ -5,9 +5,10 @@ const {
   addSubCategory,
   deleteSubCategory,
   updateSubCategory,
-  getAllSubCategoriesByCategoryId,
   getAllSubCategoriesByCategorySlug,
+  getAllSubCategoriesByCategoryId,
 } = require("../controller/SubCategoryController");
+const { adminAuthMiddlewares } = require("../middlewares/authMiddlewares");
 const subCategoryRouter = express.Router();
 
 subCategoryRouter.get("/", getAllSubCategories);
@@ -17,8 +18,8 @@ subCategoryRouter.get(
   getAllSubCategoriesByCategorySlug
 );
 subCategoryRouter.get("/:id", getSinglelSubCategory);
-subCategoryRouter.post("/", addSubCategory);
-subCategoryRouter.patch("/:id", updateSubCategory);
-subCategoryRouter.delete("/:id", deleteSubCategory);
+subCategoryRouter.post("/", adminAuthMiddlewares, addSubCategory);
+subCategoryRouter.patch("/:id", adminAuthMiddlewares, updateSubCategory);
+subCategoryRouter.delete("/:id", adminAuthMiddlewares, deleteSubCategory);
 
 module.exports = subCategoryRouter;
