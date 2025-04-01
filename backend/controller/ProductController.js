@@ -1,20 +1,39 @@
 const { saveFile, deleteFile } = require("../helper/fileHelper");
+const { sendDataResponse, sendErrorResponse } = require("../helper/resHelper");
 const Product = require("../modules/Product");
+const SubCategory = require("../modules/SubCategory");
 
 const getAllProduct = async (req, res) => {
   try {
     const products = await Product.find();
-    res.status(200).json({ success: true, data: products });
+    sendDataResponse(res, products);
   } catch (error) {
-    res.status(505).json({ success: false, msg: error.message });
+    sendErrorResponse(res.error.message);
+  }
+};
+
+const getAllProductsBySubCategorySlug = async (req, res) => {
+  try {
+    const { subCategorySlug } = req.params;
+
+    const subCategory = await SubCategory.findOne({ slug: subCategorySlug });
+    if (!subCategory) {
+      return sendErrorResponse(res, "No such sub-category found.", 404);
+    }
+
+    const products = await Product.find({ subCategory: subCategory._id });
+
+    sendDataResponse(res, products);
+  } catch (error) {
+    sendErrorResponse(res, error.message);
   }
 };
 
 const getSingleProduct = async (req, res) => {
   try {
     const { id } = req.params;
-
     const product = await Product.findById(id);
+
     if (!product) {
       return res
         .status(404)
@@ -26,10 +45,26 @@ const getSingleProduct = async (req, res) => {
   }
 };
 
+const getProductBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const product = await Product.findOne({ slug });
+
+    if (!product) {
+      return sendErrorResponse(res, "No such product found.", 404);
+    }
+
+    sendDataResponse(res, product);
+  } catch (error) {
+    sendErrorResponse(res, error.message);
+  }
+};
+
 const addProduct = async (req, res) => {
   try {
-    console.log("req.body", req.body);
-    console.log("req.files", req.files);
+    // console.log("req.body", req.body);
+    // console.log("req.files", req.files);
 
     if (!req.files || !req.files.images) {
       return res
@@ -38,8 +73,8 @@ const addProduct = async (req, res) => {
     }
     if (Array.isArray(req.files.images)) {
       const temp = [];
-      for (const imageFile of req.files.images) {
-        const imageURL = await saveFile(imageFile, "product");
+      for (const image of req.files.images) {
+        const imageURL = await saveFile(image, "product");
         temp.push(imageURL);
       }
 
@@ -47,6 +82,14 @@ const addProduct = async (req, res) => {
     } else {
       const imageURL = await saveFile(req.files.images, "product");
       req.body.images = [imageURL];
+    }
+
+    if (req.body.sizes) {
+      req.body.sizes = req.body.sizes.split(",");
+    }
+
+    if (req.body.colors) {
+      req.body.colors = req.body.colors.split(",");
     }
 
     const product = await Product.create(req.body);
@@ -82,18 +125,34 @@ const updateProduct = async (req, res) => {
           const imageURL = await saveFile(imageFile, "product");
           temp.push(imageURL);
         }
-        console.log("temp", temp);
+        for (const imageURL of product.images) {
+          if (!req.body.images.includes(imageURL)) {
+            await deleteFile(imageURL, "product");
+          }
+        }
+        // console.log("temp", temp);
         req.body.images = [...req.body.images, ...temp];
       } else {
         const imageURL = await saveFile(req.files.images, "product");
+
+        for (const image of product.images) {
+          if (!req.body.images.includes(image)) {
+            await deleteFile(image, "product");
+          }
+        }
+
         req.body.images = [...req.body.images, imageURL];
       }
     }
-    for (const imageURL of product.images) {
-      if (!req.body.images.includes(imageURL)) {
-        await deleteFile(imageURL, "product");
-      }
+
+    if (req.body.sizes) {
+      req.body.sizes = req.body.sizes.split(",");
     }
+
+    if (req.body.colors) {
+      req.body.colors = req.body.colors.split(",");
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
@@ -129,7 +188,9 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
   getAllProduct,
+  getAllProductsBySubCategorySlug,
   getSingleProduct,
+  getProductBySlug,
   addProduct,
   updateProduct,
   deleteProduct,
