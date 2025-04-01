@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { sendErrorResponse } = require("../helper/resHelper");
-const ExpiredToken = require("../modules/ExperidToken");
+const ExpiredToken = require("../modules/ExpiredToken");
 
 const authMiddlewares = async (req, res, next) => {
   try {
