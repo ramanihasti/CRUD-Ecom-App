@@ -1,20 +1,21 @@
 const jwt = require("jsonwebtoken");
 const { sendErrorResponse } = require("../helper/resHelper");
+const ExpiredToken = require("../modules/ExperidToken");
 
 const authMiddlewares = async (req, res, next) => {
   try {
     if (
       !req.headers.authorization ||
-      !req.headers.authorization.startsWith("Bearer")
+      !req.headers.authorization.startsWith("Bearer ")
     ) {
       return sendErrorResponse(res, "Unauthorized", 401);
     }
 
     const token = req.headers.authorization.split(" ")[1];
 
-    const alreadyExpiredToken = await ExpiredToken.findOne({ token });
+    const alreadyExpired = await ExpiredToken.findOne({ token });
 
-    if (alreadyExpiredToken) {
+    if (alreadyExpired) {
       return sendErrorResponse(res, "Token already expired.", 400);
     }
 
@@ -38,9 +39,9 @@ const adminAuthMiddlewares = async (req, res, next) => {
 
     const token = req.headers.authorization.split(" ")[1];
 
-    const alreadyExpiredToken = await ExpiredToken.findOne({ token });
+    const alreadyExpired = await ExpiredToken.findOne({ token });
 
-    if (alreadyExpiredToken) {
+    if (alreadyExpired) {
       return sendErrorResponse(res, "Token already expired.", 400);
     }
 
