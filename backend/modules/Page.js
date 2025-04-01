@@ -7,17 +7,51 @@ const pageSchema = new mongoose.Schema({
   images: {
     type: [String],
     validate: {
-      validator: checkIfEmptyArray,
-      message: "At least one images is required.",
+      validator: (images) => {
+        if (!images) {
+          return false;
+        }
+
+        if (images && !Array.isArray(images)) {
+          return false;
+        }
+
+        if (images && Array.isArray(images) && !images.length) {
+          return false;
+        }
+
+        return true;
+      },
+      message: "At least one image is required.",
     },
     required: true,
   },
+
   subCategories: {
     type: [mongoose.Types.ObjectId],
     ref: "SubCategory",
+
     validate: {
-      validator: checkIfEmptyArray,
-      message: "At least sub-category is required.",
+      validator: (subCategories) => {
+        if (!subCategories) {
+          return false;
+        }
+
+        if (subCategories && !Array.isArray(subCategories)) {
+          return false;
+        }
+
+        if (
+          subCategories &&
+          Array.isArray(subCategories) &&
+          !subCategories.length
+        ) {
+          return false;
+        }
+
+        return true;
+      },
+      message: "At least one sub-category is required.",
     },
     required: true,
   },
