@@ -1,12 +1,12 @@
-import { Label, TextInput } from "flowbite-react";
+import { Label, Textarea } from "flowbite-react";
 import React from "react";
 
-function MyTextInput({
+function MyTextarea({
   name,
   label,
   value,
-  onChange,
-  type = "text",
+  onchange,
+  rows = 4,
   required = false,
   disabled = false,
 }) {
@@ -15,18 +15,18 @@ function MyTextInput({
       <div className="mb-2 block">
         <Label htmlFor={name} value={label} />
       </div>
-      <TextInput
+      <Textarea
         id={name}
         name={name}
         value={value}
-        onChange={onChange}
-        type={type}
+        onChange={onchange}
         placeholder={label}
         required={required}
         disabled={disabled}
-        color="primary"
+        rows={rows}
       />
     </div>
   );
 }
-export default MyTextInput;
+
+export default MyTextarea;

@@ -1,14 +1,14 @@
 import { Label, Select } from "flowbite-react";
 import React from "react";
 
-function MySelect({ name, value, label, onChange, options, required = false }) {
-  if (
-    !options.find((option) => {
-      return option.value === "";
-    })
-  ) {
-    options.unshift({ value: "", text: label });
-  }
+function MySelect({
+  name,
+  value,
+  label,
+  onChange,
+  options = [],
+  required = false,
+}) {
   return (
     <div>
       <div className="mb-2 block">
