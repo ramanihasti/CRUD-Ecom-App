@@ -226,3 +226,22 @@ export async function updateHomePage(id, body) {
   return await response.json();
 }
 // End Pages
+
+//User
+export async function getUser() {
+  const response = await fetch(`${BASE_URL}/auth/getUser`, {
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return await response.json();
+}
+//Admin
+export async function getAdmin() {
+  const response = await fetch(`${BASE_URL}/auth/getAdmin`, {
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return await response.json();
+}

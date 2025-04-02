@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { getUser } from "../services/apiServices";
+import { getAdmin } from "../services/apiServices";
 
-function UserAuthGuard({ children }) {
+function AdminAuthGuard({ children }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const location = useLocation();
   const navigate = useNavigate();
 
-  async function fetchUser() {
+  async function fetchAdmin() {
     try {
-      const result = await getUser();
+      const result = await getAdmin();
       if (!result.success) {
         navigate("/login");
         localStorage.removeItem("token");
@@ -24,14 +24,14 @@ function UserAuthGuard({ children }) {
   }
 
   useEffect(() => {
-    fetchUser();
+    fetchAdmin();
   }, [location.pathname]);
 
-  if (!user) {
+  if (!user || user.role !== "admin") {
     return <Navigate to="/login" />;
   }
 
   return <div>{children}</div>;
 }
 
-export default UserAuthGuard;
+export default AdminAuthGuard;
