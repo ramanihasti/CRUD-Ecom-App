@@ -8,7 +8,7 @@ export default function useForm({
   addData,
   updateData,
   setOtherStates,
-  getUpdateFormState,
+  getUpdatedFormState,
   getFormData,
   navURL,
 }) {
