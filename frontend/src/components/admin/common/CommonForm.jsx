@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { HiExclamation } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import MessageBox from "../common/MessageBox";
+import MessageBox from "../../common/MessageBox";
 // import MessageBox from "../../../components/common/MessageBox";
 
 function CommonForm({
