@@ -8,7 +8,7 @@ import MyMultipleFileInput from "../../../components/admin/common/form/MyMultipl
 import MySelect from "../../../components/admin/common/form/MySelect";
 import MyTextInput from "../../../components/admin/common/form/MyTextInput";
 import MyAlert from "../../../components/common/MyAlert";
-import { useForm } from "../../../components/hooks/useForm";
+// import { useForm } from "../../../components/hooks/useForm";
 import {
   addPage,
   getAllCategories,
@@ -16,6 +16,7 @@ import {
   getSinglePage,
   updatePage,
 } from "../../../services/apiServices";
+import useForm from "../../../hooks/useForm";
 
 const initialState = {
   name: "",

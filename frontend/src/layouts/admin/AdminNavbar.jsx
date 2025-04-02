@@ -6,15 +6,15 @@ import { COMPANY_NAME } from "../../consts";
 function AdminNavbar() {
   return (
     <Navbar fluid rounded>
-      <Navbar.Brand href="https://flowbite-react.com">
+      <Navbar.Brand href="/">
         <img
           src="/logo.png"
           className="mr-3 h-6 sm:h-9"
           alt={`${COMPANY_NAME} Logo`}
         />
-        {/* <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          Flowbite React
-        </span> */}
+        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+          {COMPANY_NAME}
+        </span>
       </Navbar.Brand>
       <div className="flex md:order-2">
         <Dropdown
@@ -39,7 +39,7 @@ function AdminNavbar() {
           </Dropdown.Item>
 
           <Dropdown.Divider />
-          <Dropdown.Item>Sign out</Dropdown.Item>
+          <Dropdown.Item>Log out</Dropdown.Item>
         </Dropdown>
         <Navbar.Toggle />
       </div>

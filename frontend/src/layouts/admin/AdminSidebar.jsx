@@ -8,7 +8,8 @@ import { HiMiniUser } from "react-icons/hi2";
 import { HiMiniPower } from "react-icons/hi2";
 import { HiDocumentPlus } from "react-icons/hi2";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../../services/apiServices";
 
 const links = [
   { id: 1, name: "Dashboard", to: "/admin", icon: HiSparkles },
@@ -26,21 +27,63 @@ const links = [
   { id: 8, name: "Log Out", to: "/", icon: HiMiniPower },
 ];
 
+function SidebarListItem({ icon: Icon, link, name }) {
+  return (
+    <li>
+      <Link
+        to={link}
+        className="text-lg text-gray-600 hover:text-purple-600 flex items-center gap-2"
+      >
+        <Icon className="w-5 h-5" />
+        <span>{name}</span>
+      </Link>
+    </li>
+  );
+}
+
 function AdminSidebar() {
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    try {
+      const result = await logout();
+
+      if (!result.success) {
+        alert(result.msg);
+      }
+      alert("Logged out successfully.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <>
-      <ul className="border-r border-r-gray-300 p-4 font-serif">
-        {links.map((value) => {
+      <ul className="border-r border-r-gray-300 flex flex-col gap-6 p-4 font-serif">
+        {links.map((link) => {
           return (
-            <li key={value.id} className="text-[#21534e] hover:text-teal-600 ">
-              <Link className="flex items-center gap-2" to={value.to}>
-                <value.icon className="h-4 w-4" />
-                <span className="text-md">{value.name}</span>
-              </Link>
-            </li>
+            <SidebarListItem
+              key={link.id}
+              icon={link.icon}
+              link={link.to}
+              name={link.name}
+            />
           );
         })}
-        <li></li>
+        <li
+          onClick={handleLogout}
+          key={value.id}
+          className="text-lg cursor-pointer text-[#21534e] hover:text-teal-600 flex items-center gap-2 "
+        >
+          <HiMiniPower className="w-5 h-5" />
+          <span>Log Out</span>
+          {/* <Link className="flex items-center gap-2" to={value.to}>
+            <value.icon className="h-4 w-4" />
+            <span className="text-md">{value.name}</span>
+          </Link> */}
+        </li>
       </ul>
     </>
   );

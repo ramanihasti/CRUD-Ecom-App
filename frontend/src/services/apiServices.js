@@ -245,3 +245,13 @@ export async function getAdmin() {
   });
   return await response.json();
 }
+
+//Logout
+export async function logout() {
+  const response = await fetch(`${BASE_URL}/auth/logout`, {
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return await response.json();
+}
