@@ -1,103 +1,95 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export function useForm({
+export default function useForm({
   initialState,
   getDataById,
-  setOtherStates,
-  getFormData,
-  updateFormState,
   addData,
   updateData,
+  setOtherStates,
+  getUpdateFormState,
+  getFormData,
   navURL,
 }) {
   const { id } = useParams();
-  const isAdd = id === "add";
-
+  const isUpdate = id !== "add";
   const [formStateLoading, setFormStateLoading] = useState(
-    isAdd ? false : true
+    isUpdate ? true : false
   );
   const [formState, setFormState] = useState(initialState);
   const [formStateError, setFormStateError] = useState("");
-
   const navigate = useNavigate();
 
+  async function fetchFormData() {
+    try {
+      const result = await getDataById(id);
+      if (!result.success) {
+        setFormStateError("Failed to fetch form data.");
+        return;
+      }
+
+      setFormState(result.data);
+
+      if (setOtherStates) {
+        setOtherStates(result.data);
+      }
+    } catch (error) {
+      setFormStateError("Failed to fetch form data.");
+    } finally {
+      setFormStateLoading(false);
+    }
+  }
   useEffect(() => {
-    if (!isAdd) {
-      fetchData();
+    if (!isUpdate) {
+      fetchFormData();
     }
   }, [id]);
 
-  const fetchData = useCallback(
-    async function () {
-      try {
-        const result = await getDataById(id);
-
-        if (!result.success) {
-          toast("Faild to fetch form data.", { type: "error" });
-          setFormStateError("Failed to fetch form data.");
-          console.log(result.msg);
-          return;
-        }
-        setFormState(result.data);
-
-        if (setOtherStates) {
-          setOtherStates(result.data);
-        }
-      } catch (error) {
-        toast("Failed to fetch form data.", { type: "error" });
-        setFormStateError("Failed to fetch form data.");
-        console.log(error.message);
-      } finally {
-        setFormStateLoading(false);
-      }
-    }[id]
-  );
-
   function handleChange(e) {
-    updateFormState(e, formState, setFormState);
+    const formStateCopy = { ...formState };
+    const updatedFormState = getUpdatedFormState(e, formStateCopy);
+    setFormState(updatedFormState);
   }
 
   async function handleSubmit(e) {
     try {
       e.preventDefault();
-      const formData = getFormData(formState);
+      const formData = getFormData();
 
       let result;
-      if (isAdd) {
-        result = await addData(formData);
-      } else {
+      if (isUpdate) {
         result = await updateData(id, formData);
+      } else {
+        result = await addData(formData);
       }
 
       if (!result.success) {
-        toast(`Failed to ${isAdd ? "add" : "update"} data.`, {
+        toast(`Failed to ${isUpdate ? "update" : "add"} data.`, {
           type: "error",
         });
-        console.log(result.msg);
+        // console.log(result.msg);
         return;
       }
 
-      toast(`Data ${isAdd ? "added" : "updated"} successfully.`, {
+      toast(`Data ${isUpdate ? "updated" : "added"} successfully.`, {
         type: "success",
       });
 
       navigate(navURL);
     } catch (error) {
-      toast(`Failed to ${isAdd ? "add" : "update"} data.`, {
+      toast(`Failed to ${isUpdate ? "update" : "add"} data.`, {
         type: "error",
       });
-      console.log(error.message);
+      // console.log(error.message);
     }
   }
 
   return {
-    isAdd,
+    isUpdate,
+    formState,
     formStateLoading,
     formStateError,
-    formState,
-    setFormState,
     handleChange,
     handleSubmit,
   };
