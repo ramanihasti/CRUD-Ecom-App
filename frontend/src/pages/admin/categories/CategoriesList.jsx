@@ -1,24 +1,27 @@
 import React from "react";
-import AdminPageTitle from "../../../components/admin/common/AdminPageTitle";
 import {
   deleteCategory,
   getAllCategories,
 } from "../../../services/apiServices";
 import MyCommonList from "../../../components/common/MyCommonList";
+import AdminPageTitle from "../../../components/admin/common/AdminPageTitle";
 
 function CategoriesList() {
   return (
     <div>
-      <AdminPageTitle title="Categories" link="/admin/categories/add" />
+      <AdminPageTitle
+        title="Categories"
+        btn={{ to: "/admin/categories/add", text: "Add Category" }}
+      />
       <div>
         <MyCommonList
-          getAllData={getAllCategories}
+          getData={getAllCategories}
           deleteData={deleteCategory}
-          getAllFields={(category) => {
+          getFieldValues={(entity) => {
             return {
-              image: category.image,
-              title: category.name,
-              subTitle: category.slug,
+              image: entity.image,
+              title: entity.name,
+              desc: entity.slug,
             };
           }}
         />
