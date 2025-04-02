@@ -4,52 +4,58 @@ import { HiMiniPencilSquare, HiMiniTrash } from "react-icons/hi2";
 
 function MyCommonListItem({
   id,
-  src,
+  image,
   title,
-  subTitle,
-  handleDelete,
+  desc,
   handleEdit,
+  handleDelete,
   index,
   length,
 }) {
   return (
     <>
-      <li className="flex items-center gap-4 py-2">
-        <img src={src} alt="" className="h-14 w-14 rounded-full object-cover" />
-        <div className="grow-[1]">
-          <h3 className="font-serif">{title}</h3>
-          <p className="font-thin">{subTitle}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* <Button
-            size="xs"
-            gradientDuoTone="primary"
-            onClick={() => {
-              handleEdit(id);
-            }}
-          > */}
-          <Button
-            onClick={() => {
-              handleEdit(id);
-            }}
-            size="xs"
-            gradientDuoTone="primary"
-          >
-            <HiMiniPencilSquare className="h-4 w-4" onClick={handleEdit} />
-          </Button>
-          <Button
-            size="xs"
-            color="failure"
-            onClick={() => {
-              handleDelete(id);
-            }}
-          >
-            <HiMiniTrash className="h-4 w-4" />
-          </Button>
+      <li className="py-3 sm:py-4">
+        <div className="flex items-center space-x-4">
+          <div className="shrink-0 border rounded-full border-gray-300 h-[32px] w-[32px] overflow-hidden">
+            <img
+              alt="Neil image"
+              src={image}
+              className="rounded-full h-full w-full object-cover"
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+              {title}
+            </p>
+            <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+              {desc}
+            </p>
+          </div>
+          <div className="inline-flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-white">
+            <Button
+              pill
+              size="sm"
+              onClick={() => {
+                handleEdit(id);
+              }}
+            >
+              <HiMiniPencilSquare />
+            </Button>
+            <Button
+              pill
+              size="sm"
+              color="failure"
+              onClick={() => {
+                handleDelete(id);
+              }}
+            >
+              <HiMiniTrash />
+            </Button>
+          </div>
         </div>
       </li>
       {index < length - 1 && (
-        <hr className="mt-2 mb-2 border-b border-b-violet-300" />
+        <hr className="border-b border-b-cyan-100 outline-0" />
       )}
     </>
   );
