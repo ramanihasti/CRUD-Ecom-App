@@ -1,8 +1,4 @@
 // Categories
-
-import { BASE_URL } from "../consts";
-// import { getAllApiServices } from "../helper/apiServicesHelper";
-
 export async function getAllCategories() {
   const response = await fetch(`${BASE_URL}/categories`);
   return await response.json();
@@ -37,16 +33,7 @@ export async function deleteCategory(id) {
 }
 // End Categories
 
-// export const {
-//   getAllCategories,
-//   getSingleCategory,
-//   addCategory,
-//   updateCategory,
-//   deleteCategory,
-// } = getAllApiServices("category", "categories");
-
 // Sub-Categories
-
 export async function getAllSubCategories() {
   const response = await fetch(`${BASE_URL}/subCategories`);
   return await response.json();
@@ -79,7 +66,6 @@ export async function deleteSubCategory(id) {
   });
   return await response.json();
 }
-// End Sub-Category
 
 export async function getAllSubCategoriesByCategorySlug(categorySlug) {
   const response = await fetch(
@@ -94,6 +80,7 @@ export async function getAllSubCategoriesByCategoryId(categoryId) {
   );
   return await response.json();
 }
+// End Sub-Category
 
 // Product
 export async function getAllProducts() {
@@ -127,6 +114,18 @@ export async function deleteProduct(id) {
     method: "DELETE",
   });
   return await response.json();
+}
+
+export async function getAllProductsBySubCategorySlug(slug) {
+  const response = await fetch(`${BASE_URL}/products/subCategory/${slug}`);
+  const data = await response.json();
+  return data;
+}
+
+export async function getProductBySlug(slug) {
+  const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
+  const data = await response.json();
+  return data;
 }
 // End Product
 
@@ -164,18 +163,33 @@ export async function deletePage(id) {
   return await response.json();
 }
 
-export async function getAllProductsBySubCategorySlug(slug) {
-  const response = await fetch(`${BASE_URL}/products/subCategory/${slug}`);
+export async function getPageBySlug(slug) {
+  const response = await fetch(`${BASE_URL}/pages/slug/${slug}`);
   const data = await response.json();
   return data;
 }
 
-export async function getProductBySlug(slug) {
-  const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
-  const data = await response.json();
-  return data;
+export async function getAllHomePages() {
+  const response = await fetch(`${BASE_URL}/homePages`);
+  return await response.json();
 }
-// End Product
+
+export async function addHomePage(body) {
+  const response = await fetch(`${BASE_URL}/homePages`, {
+    method: "POST",
+    body: body,
+  });
+  return await response.json();
+}
+
+export async function updateHomePage(id, body) {
+  const response = await fetch(`${BASE_URL}/homePages/${id}`, {
+    method: "PATCH",
+    body,
+  });
+  return await response.json();
+}
+//End page
 
 // Auth
 export async function register(data) {
@@ -200,44 +214,14 @@ export async function login(data) {
   return await response.json();
 }
 
-//koi bhi from input ko handle karne ke liye teen chize honi zaruri hain: id. name, onchange
-// frontend se backend tak data bhej ne ke liye ye current folder yani ki apiServices ke function ka use karna zaruri hain.
-//inse aap frontend se backend par req bhej sakte hain.
-
-// CORS policy ki error:
-// Access to fetch at 'http://localhost/5000/categories' from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
-
-//'http://localhost/5000/categories' se jo request 'http://localhost:5173' pe jo request bheji hain wo CORS policy દ્વારા block kari hain.
-//ye error ko soul kar ne ke liye aapko backend me ek package install karna padega.
-// npm i cors
-
-// home page
-export async function getPageBySlug(slug) {
-  const response = await fetch(`${BASE_URL}/pages/slug/${slug}`);
-  const data = await response.json();
-  return data;
-}
-
-export async function getAllHomePages() {
-  const response = await fetch(`${BASE_URL}/homePages`);
-  return await response.json();
-}
-export async function addHomePage(body) {
-  const response = await fetch(`${BASE_URL}/homePages`, {
-    method: "POST",
-    body: body,
+export async function logout() {
+  const response = await fetch(`${BASE_URL}/auth/logout`, {
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
   });
   return await response.json();
 }
-
-export async function updateHomePage(id, body) {
-  const response = await fetch(`${BASE_URL}/homePages/${id}`, {
-    method: "PATCH",
-    body,
-  });
-  return await response.json();
-}
-// End Pages
 
 //User
 export async function getUser() {
@@ -258,17 +242,7 @@ export async function getAdmin() {
   return await response.json();
 }
 
-//Logout
-export async function logout() {
-  const response = await fetch(`${BASE_URL}/auth/logout`, {
-    headers: {
-      authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  return await response.json();
-}
-
-//order
+//Order
 export async function createOrder(data) {
   const response = await fetch(`${BASE_URL}/orders`, {
     method: "POST",
@@ -302,3 +276,14 @@ export async function getAllOrders(data) {
   });
   return await response.json();
 }
+//End Order
+//koi bhi from input ko handle karne ke liye teen chize honi zaruri hain: id. name, onchange
+// frontend se backend tak data bhej ne ke liye ye current folder yani ki apiServices ke function ka use karna zaruri hain.
+//inse aap frontend se backend par req bhej sakte hain.
+
+// CORS policy ki error:
+// Access to fetch at 'http://localhost/5000/categories' from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+
+//'http://localhost/5000/categories' se jo request 'http://localhost:5173' pe jo request bheji hain wo CORS policy દ્વારા block kari hain.
+//ye error ko soul kar ne ke liye aapko backend me ek package install karna padega.
+// npm i cors
