@@ -1,26 +1,31 @@
+import { Button, Spinner } from "flowbite-react";
 import React, { useEffect, useState } from "react";
-import MyTextInput from "../../../components/admin/common/form/MyTextInput";
-import MyTextarea from "../../../components/admin/common/form/MyTextarea";
+import { HiExclamation } from "react-icons/hi";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import AdminPageTitle from "../../../components/admin/common/AdminPageTitle";
+import MyMultipleFileUpload from "../../../components/admin/common/form/MyMultipleFileUpload";
+import MyMultiSelect from "../../../components/admin/common/form/MyMultiSelect";
 import MySelect from "../../../components/admin/common/form/MySelect";
-import { Button } from "flowbite-react";
+import MyTextarea from "../../../components/admin/common/form/MyTextarea";
+import MyTextInput from "../../../components/admin/common/form/MyTextInput";
+import MessageBox from "../../../components/common/MessageBox";
 import {
   addProduct,
   getAllCategories,
-  getAllSubCategories,
+  getAllSubCategoriesByCategoryId,
   getSingleProduct,
   updateProduct,
 } from "../../../services/apiServices";
-import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
-import MyAlert from "../../../components/common/MyAlert";
-import { HiArrowPath, HiMiniExclamationTriangle } from "react-icons/hi2";
-import MyMultipleFileInput from "../../../components/admin/common/form/MyMultipleFileInput";
+// import MyAlert from "../../../components/common/MyAlert";
+// import { HiArrowPath, HiMiniExclamationTriangle } from "react-icons/hi2";
+// import MyMultipleFileInput from "../../../components/admin/common/form/MyMultipleFileInput";
 
 const initialState = {
   name: "",
   slug: "",
-  desc: "",
   images: null,
+  desc: "",
   category: "",
   subCategory: "",
   price: "",
@@ -28,85 +33,64 @@ const initialState = {
   discountPercentage: "",
   taxPercentage: "",
   shippingFee: "",
-  color: [],
+  qty: "",
   sizes: [],
+  colors: [],
 };
 
 function ProductsForm() {
   const { id } = useParams();
   const isAdd = id === "add";
-  const [loadingFormState, setLoadingFormState] = useState(
+  // const [loadingFormState, setLoadingFormState] = useState(
+  //   isAdd ? false : true
+  // );
+  // const [formState, setFormState] = useState(initialState);
+  // const [errorFormState, setErrorFormState] = useState("");
+
+  // const [imageUrls, setImageUrls] = useState([""]);
+
+  // const [LoadingCategories, setLoadingCategories] = useState(true);
+  // const [categoriesOptions, setCategoriesOptions] = useState([]);
+  // const [errorCategories, setErrorCategories] = useState([]);
+
+  // const [LoadingSubCategories, setLoadingSubCategories] = useState(true);
+  // const [subCategoriesOptions, setSubCategoriesOptions] = useState([]);
+  // const [errorSubCategories, setErrorSubCategories] = useState([]);
+  // const navigate = useNavigate();
+
+  const [formStateLoading, setFormStateLoading] = useState(
     isAdd ? false : true
   );
   const [formState, setFormState] = useState(initialState);
-  const [errorFormState, setErrorFormState] = useState("");
-
-  const [imageUrls, setImageUrls] = useState([""]);
-
-  const [LoadingCategories, setLoadingCategories] = useState(true);
+  const [formStateError, setFormStateError] = useState("");
+  const [imagesURLs, setImagesURLs] = useState([""]);
   const [categoriesOptions, setCategoriesOptions] = useState([]);
-  const [errorCategories, setErrorCategories] = useState([]);
-
-  const [LoadingSubCategories, setLoadingSubCategories] = useState(true);
   const [subCategoriesOptions, setSubCategoriesOptions] = useState([]);
-  const [errorSubCategories, setErrorSubCategories] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchSubCategories();
-  }, []);
-
-  useEffect(() => {
-    if (!isAdd) {
-      fetchProduct();
-    }
-  }, [id]);
 
   async function fetchCategories() {
     try {
       const result = await getAllCategories();
-
-      if (!result.success) {
-        toast("Failed to fetch categories.", { type: "error" });
-        setErrorCategories("Failed to fetch categories.");
-        return;
-      }
-
-      const transformedCateggories = result.data.map((category) => {
+      const temp = result.data.map((category) => {
         return { value: category._id, text: category.name };
       });
-      setCategoriesOptions(transformedCateggories);
+      temp.unshift({ value: "", text: "Select A Category" });
+      setCategoriesOptions(temp);
     } catch (error) {
       toast("Failed to fetch categories.", { type: "error" });
-      setErrorCategories("Failed to fetch categories.");
-    } finally {
-      setLoadingCategories(false);
     }
   }
 
-  async function fetchSubCategories() {
+  async function fetchSubCategoriesByCategoryId() {
     try {
-      const result = await getAllSubCategories();
-
-      if (!result.success) {
-        toast("Failed to fetch sub-Categories.", { type: "error" });
-        setErrorSubCategories("Failed to fetch sub-Categories.");
-        return;
-      }
-
-      const transformedSubCateggories = result.data.map((subCategory) => {
+      const result = await getAllSubCategoriesByCategoryId(formState.category);
+      const temp = result.data.map((subCategory) => {
         return { value: subCategory._id, text: subCategory.name };
       });
-      setSubCategoriesOptions(transformedSubCateggories);
+      temp.unshift({ value: "", text: "Select A Sub-Category" });
+      setSubCategoriesOptions(temp);
     } catch (error) {
-      toast("Failed to fetch sub-Categories.", { type: "error" });
-      setErrorSubCategories("Failed to fetch sub-Categories.");
-    } finally {
-      setLoadingSubCategories(false);
+      toast("Failed to fetch sub-categories.", { type: "error" });
     }
   }
 
@@ -116,26 +100,59 @@ function ProductsForm() {
 
       if (!result.success) {
         toast("Failed to fetch Product.", { type: "error" });
-        setErrorFormState("Failed to fetch Product.");
+        setFormStateError("Failed to fetch Product.");
         return;
       }
 
       setFormState(result.data);
-      setImageUrls(result.data.images);
+      setImagesURLs(result.data.images);
     } catch (error) {
       toast("Failed to fetch product.", { type: "error" });
-      setErrorFormState("Failed to fetch product.");
+      setFormStateError("Failed to fetch product.");
     } finally {
-      setLoadingFormState(false);
+      setFormStateLoading(false);
     }
+  }
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (formState.category) {
+      fetchSubCategoriesByCategoryId();
+    }
+  }, [formState.category]);
+
+  useEffect(() => {
+    if (!isAdd) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  function handleFileUpload(e) {
+    const files = e.target.files;
+    setFormState({ ...formState, images: files });
+    const urls = [];
+    for (const file of files) {
+      const tempURL = URL.createObjectURL(file);
+      urls.push(tempURL);
+    }
+    setImagesURLs(urls);
   }
 
   function handleChange(e) {
     if (e.target.name === "name") {
       setFormState({
         ...formState,
-        [e.target.name]: e.target.value,
+        name: e.target.value,
         slug: e.target.value.toLowerCase().replaceAll(" ", "-"),
+      });
+    } else if (e.target.name === "category") {
+      setFormState({
+        ...formState,
+        [e.target.name]: e.target.value,
+        subCategory: "",
       });
     } else {
       setFormState({
@@ -143,16 +160,6 @@ function ProductsForm() {
         [e.target.name]: e.target.value,
       });
     }
-  }
-
-  function handleFileUpload(e) {
-    const files = e.target.files;
-    setFormState({ ...formState, images: files });
-    const temp = [];
-    for (const file of files) {
-      temp.push(URL.createObjectURL(file));
-    }
-    setImageUrls(temp);
   }
 
   async function handleSubmit(e) {
@@ -169,7 +176,7 @@ function ProductsForm() {
           formData.append(key, formState[key]);
         }
       }
-      console.log("updated formState", formState);
+      // console.log("updated formState", formState);
       // console.log(Array.from(formData.entries()));
 
       let result;
@@ -185,7 +192,7 @@ function ProductsForm() {
         });
       }
 
-      console.log("successfully updated product.", result);
+      // console.log("successfully updated product.", result);
       toast(`Successfully ${isAdd ? "added" : "updated"} product.`, {
         type: "success",
       });
@@ -198,130 +205,179 @@ function ProductsForm() {
     }
   }
 
-  if (loadingFormState) {
-    return <MyAlert icon={HiArrowPath} msg="Loading..." />;
+  function setSelectedSizes(updatedSizes) {
+    setFormState({ ...formState, sizes: updatedSizes });
   }
 
-  if (errorFormState) {
+  function setSelectedColors(updatedColors) {
+    setFormState({ ...formState, colors: updatedColors });
+  }
+
+  if (formStateLoading) {
     return (
-      <MyAlert
-        color="failure"
-        icon={HiMiniExclamationTriangle}
-        msg={errorFormState}
+      <MessageBox
+        renderIcon={() => {
+          return <Spinner />;
+        }}
+        message="Loading..."
       />
     );
   }
+
+  if (formStateError) {
+    return (
+      <MessageBox
+        icon={HiExclamation}
+        message={formStateError}
+        status="error"
+      />
+    );
+  }
+  // async function fetchSubCategories() {
+  //   try {
+  //     const result = await getAllSubCategories();
+
+  //     if (!result.success) {
+  //       toast("Failed to fetch sub-Categories.", { type: "error" });
+  //       setErrorSubCategories("Failed to fetch sub-Categories.");
+  //       return;
+  //     }
+
+  //     const transformedSubCateggories = result.data.map((subCategory) => {
+  //       return { value: subCategory._id, text: subCategory.name };
+  //     });
+  //     setSubCategoriesOptions(transformedSubCateggories);
+  //   } catch (error) {
+  //     toast("Failed to fetch sub-Categories.", { type: "error" });
+  //     setErrorSubCategories("Failed to fetch sub-Categories.");
+  //   } finally {
+  //     setLoadingSubCategories(false);
+  //   }
+  // }
   return (
     <div>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 mt-4 gap-4">
-        {/* images upload */}
-        <MyMultipleFileInput
-          name="images"
-          label="Product Images"
-          onChange={handleFileUpload}
-          urls={imageUrls}
-        />
-
-        {/* name Input */}
-        <div className="grid grid-cols-2 gap-4">
-          <MyTextInput
-            name="name"
-            label="Product Name"
-            value={formState.name}
-            onChange={handleChange}
-            required={true}
-          />
-          {/* slug Input */}
-          <MyTextInput
-            name="slug"
-            label="Product Slug"
-            value={formState.slug}
-            disabled={true}
-          />
-        </div>
-
-        {/* desc Textarea */}
-        <MyTextarea
-          name="desc"
-          label="Description"
-          value={formState.desc}
-          onchange={handleChange}
-        />
-        <div className="grid grid-cols-2 gap-4">
-          {/* category Select */}
-          <MySelect
-            name="category"
-            label="Select A Category"
-            value={formState.category}
-            onChange={handleChange}
-            options={categoriesOptions}
-          />
-          {/* subCategory Select */}
-          <MySelect
-            name="subCategory"
-            label="Select A Sub-Category"
-            value={formState.subCategory}
-            onChange={handleChange}
-            options={subCategoriesOptions}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          {/* price Input */}
-          <MyTextInput
-            name="price"
-            label="Price"
-            type="number"
-            value={formState.price}
-            onChange={handleChange}
-            required={true}
-          />
-          {/* quantity Input */}
-          <MyTextInput
-            name="quantity"
-            label="Quantity"
-            type="number"
-            value={formState.quantity}
-            onChange={handleChange}
-            required={true}
-          />
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          {/* discountPercentage Input */}
-          <MyTextInput
-            name="discountPercentage"
-            label="Discount (%)"
-            type="number"
-            value={formState.discountPercentage}
-            onChange={handleChange}
-            required={true}
-          />
-          {/* taxPercentage Input */}
-          <MyTextInput
-            name="taxPercentage"
-            label="Tax (%)"
-            type="number"
-            value={formState.taxPercentage}
-            onChange={handleChange}
-            required={true}
+      <AdminPageTitle title={`${isAdd ? "Add" : "Update"} Product`} />
+      <div>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 mt-4 gap-4">
+          {/* images upload */}
+          <MyMultipleFileUpload
+            urls={imagesURLs}
+            name="images"
+            label="Product Images"
+            onChange={handleFileUpload}
           />
 
-          {/* shippingFee Input */}
-          <MyTextInput
-            name="shippingFee"
-            label="Shipping Fee"
-            type="number"
-            value={formState.shippingFee}
-            onChange={handleChange}
-            required={true}
+          {/* name Input */}
+          <div className="grid grid-cols-2 gap-4">
+            <MyTextInput
+              name="name"
+              label="Product Name"
+              value={formState.name}
+              onChange={handleChange}
+            />
+            {/* slug Input */}
+            <MyTextInput
+              name="slug"
+              label="Product Slug"
+              value={formState.slug}
+              disabled={true}
+            />
+          </div>
+
+          {/* desc Textarea */}
+          <MyTextarea
+            name="desc"
+            label="Description"
+            required
+            value={formState.desc}
+            onchange={handleChange}
           />
-        </div>
-        {/* colors Multi Select */}
-        {/* sizes Multi Select */}
-        <Button gradientDuoTone="primary" type="submit">
-          Submit
-        </Button>
-      </form>
+          <div className="grid grid-cols-2 gap-4">
+            {/* category Select */}
+            <MySelect
+              name="category"
+              label="Product Category"
+              value={formState.category}
+              onChange={handleChange}
+              options={categoriesOptions}
+            />
+            {/* subCategory Select */}
+            <MySelect
+              name="subCategory"
+              label="Product Sub-Category"
+              value={formState.subCategory}
+              onChange={handleChange}
+              options={subCategoriesOptions}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* price Input */}
+            <MyTextInput
+              name="price"
+              label="Product Price"
+              type="number"
+              value={formState.price}
+              onChange={handleChange}
+            />
+            {/* quantity Input */}
+            <MyTextInput
+              name="qty"
+              label="Product Qantity"
+              type="number"
+              value={formState.qty}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            {/* discountPercentage Input */}
+            <MyTextInput
+              name="discountPercentage"
+              label="Product Discount (%)"
+              type="number"
+              value={formState.discountPercentage}
+              onChange={handleChange}
+            />
+            {/* taxPercentage Input */}
+            <MyTextInput
+              name="taxPercentage"
+              label="Product Tax (%)"
+              type="number"
+              value={formState.taxPercentage}
+              onChange={handleChange}
+            />
+
+            {/* shippingFee Input */}
+            <MyTextInput
+              name="shippingFee"
+              label="Product Shipping Fee"
+              type="number"
+              value={formState.shippingFee}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {/* Sizes Multi Select Here */}
+            <MyMultiSelect
+              name="sizes"
+              selected={formState.sizes}
+              setSelected={setSelectedSizes}
+              initialState={SIZES}
+            />
+
+            {/* Colors Multi Select Here */}
+            <MyMultiSelect
+              name="colors"
+              selected={formState.colors}
+              setSelected={setSelectedColors}
+              initialState={COLORS}
+            />
+          </div>
+          <Button gradientDuoTone="primary" type="submit">
+            Submit
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
