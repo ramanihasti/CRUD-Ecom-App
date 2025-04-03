@@ -9,16 +9,19 @@ import {
 function SubCategoriesList() {
   return (
     <div>
-      <AdminPageTitle title="Sub Categories" link="/admin/subCategories/add" />
+      <AdminPageTitle
+        title="Sub Categories"
+        btn={{ to: "/admin/subCategories/add", text: "Add SubCategory" }}
+      />
       <div>
         <MyCommonList
-          getAllData={getAllSubCategories}
+          getData={getAllSubCategories}
           deleteData={deleteSubCategory}
-          getAllFields={(subCategory) => {
+          getFieldValues={(entity) => {
             return {
-              image: subCategory.image,
-              title: subCategory.name,
-              subTitle: subCategory.slug,
+              image: entity.image,
+              title: entity.name,
+              desc: entity.slug,
             };
           }}
         />
