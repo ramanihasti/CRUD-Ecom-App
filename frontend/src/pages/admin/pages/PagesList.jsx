@@ -6,15 +6,18 @@ import { deletePage, getAllPages } from "../../../services/apiServices";
 function PagesList() {
   return (
     <div>
-      <AdminPageTitle title="Pages" link="/admin/pages/add" />
+      <AdminPageTitle
+        title="Pages"
+        btn={{ to: "/admin/pages/add", text: "Add Page" }}
+      />
       <MyCommonList
-        getAllData={getAllPages}
+        getData={getAllPages}
         deleteData={deletePage}
-        getAllFields={(page) => {
+        getFieldValues={(entity) => {
           return {
-            image: page.images[0],
-            title: page.name,
-            subTitle: page.slug,
+            image: entity.images[0],
+            title: entity.name,
+            desc: entity.slug,
           };
         }}
       />
