@@ -4,7 +4,7 @@ import AdminPageTitle from "../../components/admin/common/AdminPageTitle";
 function Dashboard() {
   return (
     <div>
-      <AdminPageTitle title="Dashboard" />
+      <AdminPageTitle title={"Dashboard"} />
     </div>
   );
 }
