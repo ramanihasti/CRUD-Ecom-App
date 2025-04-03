@@ -9,7 +9,7 @@ import { getPageBySlug } from "../../services/apiServices";
 
 function Page() {
   const [loading, setLoading] = useState(true);
-  onst[(page, setPage)] = React.useState(null);
+  const [page, setPage] = React.useState(null);
   const [error, setError] = React.useState("");
   const { slug } = useParams();
 
@@ -27,6 +27,7 @@ function Page() {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     fetchPage();
   }, [slug]);

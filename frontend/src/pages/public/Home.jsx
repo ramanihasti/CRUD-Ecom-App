@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Carousel from "../../components/public/page/Carousel";
 import { getAllHomePages } from "../../services/apiServices";
-import MessageBox from "../../components/common/MessageBox";
 import { Spinner } from "flowbite-react";
 import { HiExclamationCircle } from "react-icons/hi2";
+import MessageBox from "../../components/common/MessageBox";
 import SubCategoryCard from "../../components/public/page/SubCategoryCard";
 
 function Home() {
@@ -33,7 +33,7 @@ function Home() {
 
   if (loading) {
     return (
-      <div>
+      <div className="p-8">
         <MessageBox
           renderIcon={() => {
             return <Spinner />;

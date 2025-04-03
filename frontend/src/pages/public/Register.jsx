@@ -1,11 +1,12 @@
 import React from "react";
 import MyTextInput from "../../components/admin/common/form/MyTextInput";
 import { Button } from "flowbite-react";
-import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../services/apiServices";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -38,6 +39,7 @@ function Register() {
     <div className="p-8 font-serif">
       <div className="border border-gray-300 rounded-lg p-8 max-w-[400px] m-auto">
         <h2 className="text-2xl font-semibold mb-4">Register</h2>
+
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
           <MyTextInput name="fname" type="text" label="First Name" />
           <MyTextInput name="lname" type="text" label="Last Name" />

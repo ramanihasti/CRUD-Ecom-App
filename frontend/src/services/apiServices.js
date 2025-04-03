@@ -163,6 +163,18 @@ export async function deletePage(id) {
   });
   return await response.json();
 }
+
+export async function getAllProductsBySubCategorySlug(slug) {
+  const response = await fetch(`${BASE_URL}/products/subCategory/${slug}`);
+  const data = await response.json();
+  return data;
+}
+
+export async function getProductBySlug(slug) {
+  const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
+  const data = await response.json();
+  return data;
+}
 // End Product
 
 // Auth
@@ -249,6 +261,41 @@ export async function getAdmin() {
 //Logout
 export async function logout() {
   const response = await fetch(`${BASE_URL}/auth/logout`, {
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return await response.json();
+}
+
+//order
+export async function createOrder(data) {
+  const response = await fetch(`${BASE_URL}/orders`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return await response.json();
+}
+
+export async function updateOrderStatus(id, data) {
+  const response = await fetch(`${BASE_URL}/orders/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return await response.json();
+}
+
+export async function getAllOrders(data) {
+  const response = await fetch(`${BASE_URL}/orders`, {
+    method: "GET",
     headers: {
       authorization: `Bearer ${localStorage.getItem("token")}`,
     },
